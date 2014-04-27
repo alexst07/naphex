@@ -17,49 +17,58 @@
  *
  */
 
-#ifndef NAPHEX_OFF_DEVICE_H
-#define NAPHEX_OFF_DEVICE_H
+#ifndef NAPHEX_ON_DEVICE_H
+#define NAPHEX_ON_DEVICE_H
 
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <mutex>
 
 #include "device.h"
 
+namespace std {
+template<class _Tp >
+class atomic;
+}
+
 namespace naph {
-  class off_device;
+  class on_device;
 }
 
 /**
- * \class off_device
+ * \class on_device
  * 
- * The off_device is a class to open a saved file with the packets
- * so the packets are received offline.
- * This class is derivated of abastract class device
+ * The clss on_device is derivate of abstract class device
+ * and define the virtuals functions of device class.
+ * on_device is used to online network device interface,
+ * it means that the packets are received in real time by this
+ * class
  */
-class off_device : public device {
+class on_device : public device {
  public:
   /**
    * Constructor
    * 
-   * @param file	Specifies the pcap file to be open
+   * @param device	Specifies the network device name
    */
-  explicit off_device(string file);
+  explicit on_device(string device);
 
   /**
    * Copy constructor
    */
-  off_device(const off_device& other);
+  on_device(const on_device& other);
 
   /**
-   * Overload oprator =
+   * Overload operator =
    */
-  off_device& operator=(const off_device& other);
+  on_device& operator=(const on_device& other);
 
   /**
    * Destructor
    */
-  ~off_device();
+  ~on_device();
 
   bool open(char *err) override;
   pcap_t * get_descr() const override;
@@ -68,12 +77,21 @@ class off_device : public device {
   int loop(int cnt, pcap_handler callback, u_char *user) override;
   void breakloop() override;
 
+  bool setdirection(int d) override;
+  bool setpromisc(int p) override;
+  bool setrfmonitor(int m) override;
+  bool settimeout(int t) override;
+
  private:
-  u_int precision;
+  int promisc;
+  int to_ms;
   bool init;
   pcap_t * descr;
-  string file;
+  string device;
   bool alloc;
+  std::mutex mtx_loop;
+  std::mutex mtx_break;
+  char err[PCAP_ERRBUF_SIZE];
 };
 
-#endif  // NAPHEX_OFF_DEVICE_H
+#endif  // NAPHEX_ON_DEVICE_H

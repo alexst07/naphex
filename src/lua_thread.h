@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef NAPHEX_LUA_UTILS_H
-#define NAPHEX_LUA_UTILS_H
+#ifndef LUA_THREAD_H
+#define LUA_THREAD_H
 
 extern "C" {
   #include <lua.h>
@@ -29,19 +29,8 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "nph_thread.h"
 
-static const char *lua_filename = NULL;
+int luaopen_threadlib(lua_State *L);
 
-void set_lua_filename(const char *name);
-
-const char *get_lua_filename();
-
-void np_lua_func(lua_State *L, const char *func, const char *args,
-                 const char *res, ...);
-void lfiler_func(lua_State *L, const char *func, const u_char *packet,
-                 u_int len, int *ret);
-void laction_func(lua_State *L, const char *func, const u_char *packet,
-                  u_int len);
-
-
-#endif  // NAPHEX_LUA_UTILS_H
+#endif // LUA_THREAD_H

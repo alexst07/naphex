@@ -17,31 +17,34 @@
  *
  */
 
-#ifndef NAPHEX_LUA_UTILS_H
-#define NAPHEX_LUA_UTILS_H
+#ifndef NPH_DEVICE_H
+#define NPH_DEVICE_H
 
-extern "C" {
-  #include <lua.h>
-  #include <lualib.h>
-  #include <lauxlib.h>
-}
+#include <map>
+#include <string>
+#include <mutex>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "device.h"
+#include "off_device.h"
+#include "on_device.h"
 
-static const char *lua_filename = NULL;
+using std::string;
 
-void set_lua_filename(const char *name);
+class nph_device {
+ public:
+  static nph_device* Instance();
+  ~nph_device();
 
-const char *get_lua_filename();
+  static bool insert_on(string conn);
+  static bool insert_off(string conn);
+  static bool erase(string conn);
+  static bool exist(string conn);
+  static device *get_conn(string conn);
 
-void np_lua_func(lua_State *L, const char *func, const char *args,
-                 const char *res, ...);
-void lfiler_func(lua_State *L, const char *func, const u_char *packet,
-                 u_int len, int *ret);
-void laction_func(lua_State *L, const char *func, const u_char *packet,
-                  u_int len);
+ private:
+   static std::mutex mtx_dev;
+   static std::map<string, device*> device_conns;
+   static nph_device* _instance;
+};
 
-
-#endif  // NAPHEX_LUA_UTILS_H
+#endif // NPH_DEVICE_H

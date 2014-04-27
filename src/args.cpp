@@ -1,5 +1,5 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
+ * This file is part of the Naphex project
  * Copyright (C) 2014  Alex Silva Torres <alexst07@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -18,6 +18,8 @@
  *
  */
 
+#include <string>
+#include <vector>
 #include "args.h"
 
 #define ARGS        "args"
@@ -26,7 +28,6 @@ args* args::_instance = NULL;
 std::vector<std::string> args::items;
 
 args::~args() {
-
 }
 
 args* args::instance() {
@@ -54,7 +55,7 @@ static int lf_args_get(lua_State *L) {
 
   if (index < args::nargs())
     lua_pushstring(L, args::get(index).c_str());
-  
+
   return 1;
 }
 
@@ -65,8 +66,8 @@ static int lf_args_size(lua_State *L) {
 
 int luaopen_argslib(lua_State *L) {
   static const luaL_Reg Obj_lib[] = {
-    { "get",	&lf_args_get },
-    { "size",	&lf_args_size },
+    { "get",    &lf_args_get },
+    { "size",   &lf_args_size },
     { NULL, NULL }
   };
 

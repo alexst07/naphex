@@ -1,5 +1,5 @@
 /*
- * <one line to give the program's name and a brief idea of what it does.>
+ * This file is part of the Naphex project
  * Copyright (C) 2014  Alex Torres <alexst07@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,14 +17,23 @@
  *
  */
 
-#include "lua_dev.h"
+extern "C" {
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+}
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include "nph_device.h"
 #include "debug.h"
 
 #define ONDEVICE        "ondevice"
 #define OFFDEVICE       "offdevice"
 
-static char *push_on_dev(lua_State *L, const char * name){
+static char *push_on_dev(lua_State *L, const char * name) {
   char *dev_name = reinterpret_cast<char *>(
                 lua_newuserdata(L, sizeof(char)*(strlen(name)+1)));
   strncpy(dev_name, name, strlen(name)+1);
@@ -62,7 +71,7 @@ static int lf_on_dev_new(lua_State *L) {
 
 static int lf_on_dev_setdirection(lua_State *L) {
   char *name = chk_on_dev(L, 1);
-  int d = luaL_checkint (L, 2);
+  int d = luaL_checkint(L, 2);
 
   if (!nph_device::exist(name))
     luaL_error(L, "Device link '%s' doesn't exist", name);
@@ -71,12 +80,12 @@ static int lf_on_dev_setdirection(lua_State *L) {
   if (!on_dev->setdirection(d))
     luaL_error(L, "Can't set direction to '%s'", name);
 
-  return 0;  
+  return 0;
 }
 
 static int lf_on_dev_promisc(lua_State *L) {
   char *name = chk_on_dev(L, 1);
-  int p = luaL_checkint (L, 2);
+  int p = luaL_checkint(L, 2);
 
   if (!nph_device::exist(name))
     luaL_error(L, "Device link '%s' doesn't exist", name);
@@ -90,7 +99,7 @@ static int lf_on_dev_promisc(lua_State *L) {
 
 static int lf_on_dev_rfmonitor(lua_State *L) {
   char *name = chk_on_dev(L, 1);
-  int r = luaL_checkint (L, 2);
+  int r = luaL_checkint(L, 2);
   nph_device conn;
 
   if (!nph_device::exist(name))
@@ -105,7 +114,7 @@ static int lf_on_dev_rfmonitor(lua_State *L) {
 
 static int lf_on_dev_time_out(lua_State *L) {
   char *name = chk_on_dev(L, 1);
-  int t = luaL_checkint (L, 2);
+  int t = luaL_checkint(L, 2);
 
   if (!nph_device::exist(name))
     luaL_error(L, "Device link '%s' doesn't exist", name);
@@ -135,7 +144,6 @@ static int lf_on_dev_open(lua_State *L) {
 }
 
 static int lf_on_dev_gc(lua_State *L) {
-  
 }
 
 int luaopen_on_devlib(lua_State *L) {
@@ -149,8 +157,8 @@ int luaopen_on_devlib(lua_State *L) {
   };
 
   static const luaL_Reg LuaLib_pcap[] = {
-    { "new", &lf_on_dev_new },
-    { NULL, NULL }
+    { "new",    &lf_on_dev_new },
+    { NULL,     NULL }
   };
 
   luaL_newlib(L, LuaLib_pcap);
@@ -224,7 +232,6 @@ static int lf_off_dev_offopen(lua_State *L) {
 }
 
 static int lf_off_dev_gc(lua_State *L) {
-  
 }
 
 int luaopen_off_devlib(lua_State *L) {

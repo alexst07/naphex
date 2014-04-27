@@ -1,5 +1,5 @@
 /*
- * <one line to give the program's name and a brief idea of what it does.>
+ * This file is part of the Naphex project
  * Copyright (C) 2014  Alex Silva Torres <alexst07@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
  *
  */
 
+#include <string>
 #include "off_device.h"
 
 off_device::off_device(string file) {
@@ -41,7 +42,8 @@ off_device::off_device(const off_device& other) {
     this->descr = other.descr;
 }
 
-off_device& off_device::operator=(const off_device& other) {
+off_device&
+off_device::operator=(const off_device& other) {
   this->init = other.init;
   this->precision = other.precision;
   this->file = file;
@@ -63,7 +65,8 @@ off_device::~off_device() {
 }
 
 // open a file for capturing
-bool off_device::open(char *err) {
+bool
+off_device::open(char *err) {
   if (pcap_open_offline(file.c_str(), err) == NULL)
     return false;
   else {
@@ -73,18 +76,21 @@ bool off_device::open(char *err) {
 }
 
 // Excute pcap_loop to avoid any change in the descr out of the class
-int off_device::loop(int cnt, pcap_handler callback, u_char *user) {
+int
+off_device::loop(int cnt, pcap_handler callback, u_char *user) {
   int r = pcap_loop(this->descr, -1, callback, user);
   return r;
 }
 
 // Execute pcap_breakloop()
-void off_device::breakloop() {
+void
+off_device::breakloop() {
   pcap_breakloop(this->descr);
 }
 
 // Return a pointer for pcap_t
-pcap_t * off_device::get_descr() const {
+pcap_t *
+off_device::get_descr() const {
   return this->descr;
 }
 
@@ -94,6 +100,7 @@ void off_device::set_device(string file) {
 }
 
 // Get the device set to be open
-string off_device::get_device() const {
+string
+off_device::get_device() const {
   return this->file;
 }
