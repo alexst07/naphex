@@ -111,8 +111,8 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  //Tlmon_print(g_list_monitor);
-  getchar();
+  // Exit when user digit Ctrl+D on Linux
+  while(getchar() != EOF);
   
   lua_close(L);
   
