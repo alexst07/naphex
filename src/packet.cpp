@@ -36,7 +36,7 @@ packet::send(const void* packet, size_t len) {
   const char *buf = reinterpret_cast<const char *>(packet);
 #ifndef NDEBUG
   Debug(5) << "Packet size: " << len;
-  for (int i = 0; i < len; i++)
+  for (size_t i = 0; i < len; i++)
     Debug(5) << *(buf+i);
 
   Debug(5) << "==========";

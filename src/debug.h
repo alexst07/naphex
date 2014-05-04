@@ -22,6 +22,7 @@
 #define NAPHEX_DEBUG_H
 
 #include <iostream>
+#include "define.h"
 
 using std::cerr;
 
