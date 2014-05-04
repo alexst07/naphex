@@ -25,49 +25,81 @@
 #include "lualibs.h"
 #include "lua_utils.h"
 #include "args.h"
+#include "debug.h"
+#include "define.h"
+
+void print_usage() {
+  std::cout << "version: " << NAPHEX_VERSION_STR << std::endl;
+  std::cout << 
+  "usage: naphex [--version] [--file=<path>] [--lfile=<path>] [args]"
+  << std::endl << std::endl;
+
+  std::cout << "options:" << std::endl;
+  std::cout 
+  << "  -v,  --version\toutput version information and exit" << std::endl
+  << "  -f,  --file\t\t\tspecify the main lua file" << std::endl
+  << "  -l,  --lfile\t\t\tspecify the function lua file" << std::endl
+  << "  -h,  --help\t\t\tdisplay this help and exit" << std::endl;
+}
 
 int main(int argc, char **argv) {
   lua_State *L;
   L = luaL_newstate();
   int opt;
-  int index;
   bool use_lf = false;
+  bool use_f = false;
   std::string file;
 
   struct option longopts[] = {
-    {"version", 0, NULL, 'v'},
-    {"lffile", 0, NULL, 'l'},
-    {"help", 0, NULL, 'h'},
-    {0,0,0,0}};
+    {"version", 0,      NULL,   'v'},
+    {"lffile",  0,      NULL,   'l'},
+    {"help",    0,      NULL,   'h'},
+    {"file",    0,      NULL,   'f'},
+    {0,         0,      0,       0}};
 
 
   while ((opt = getopt_long (argc, argv, "vflh:", longopts, NULL)) != -1) {
     switch(opt) {
       case 'v':
-	std::cout << "version" << std::endl;
-	break;
+        std::cout << "version: " << NAPHEX_VERSION_STR << std::endl;
+        exit(0);
+        break;
 
       case 'h':
-	std::cout << "help" << std::endl;
-	break;
+        print_usage();
+        exit(0);
+        break;
       
       case 'l':
-	use_lf = true;
-	break;
+        use_lf = true;
+        break;
+
+      case 'f':
+        use_f = true;
+        break;      
 
       default:
-	std::cout << "unknown option" << std::endl;
-	return 0;
+        std::cout << "unknown option" << std::endl;
+        print_usage();
+        exit(0);
     }
   }
 
-  file = argv[optind++];
+  if (argc < 2)  {
+    fprintf(stderr, "File expected\n");
+    exit(EXIT_FAILURE);
+  }
+
+  if (use_f && (argc > 1))
+    file = argv[optind++];
 
   if (use_lf && (argc > 2))
     set_lua_filename(argv[optind++]);
     
-  for(; optind < argc; optind++)
-    printf("argument: %s\n", argv[optind]);
+  for(; optind < argc; optind++) {
+    Debug(5) << "Argument" << optind << ":" << argv[optind];
+    args::insert(argv[optind]);
+  }
 
   luaL_openlibs(L);
   
@@ -94,18 +126,13 @@ int main(int argc, char **argv) {
 
   luaL_requiref(L, "args", &luaopen_argslib, 1);
   lua_pop(L, 1);
-  
-  if(argc < 2)  {
-    fprintf(stderr, "File expected\n");
-    exit(EXIT_FAILURE);
-  }
 
-  if(luaL_loadfile(L, argv[1]) != 0)  {
-    fprintf(stderr, "Could not load: %s\n", argv[1]);
+  if (luaL_loadfile(L, file.c_str()) != 0)  {
+    fprintf(stderr, "Could not load: %s\n", file.c_str());
     exit(EXIT_FAILURE);
   }
   
-  if(lua_pcall(L, 0, 0, 0) != 0)  {
+  if (lua_pcall(L, 0, 0, 0) != 0)  {
     fprintf(stderr, "Error: %s\n", lua_tostring(L, -1));
     lua_pop(L, 1);
     exit(EXIT_FAILURE);
@@ -113,9 +140,8 @@ int main(int argc, char **argv) {
 
   // Exit when user digit Ctrl+D on Linux
   while(getchar() != EOF);
-  
+
   lua_close(L);
-  
 
   return 0;
 }
