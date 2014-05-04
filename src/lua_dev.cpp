@@ -100,7 +100,6 @@ static int lf_on_dev_promisc(lua_State *L) {
 static int lf_on_dev_rfmonitor(lua_State *L) {
   char *name = chk_on_dev(L, 1);
   int r = luaL_checkint(L, 2);
-  nph_device conn;
 
   if (!nph_device::exist(name))
     luaL_error(L, "Device link '%s' doesn't exist", name);
@@ -144,6 +143,7 @@ static int lf_on_dev_open(lua_State *L) {
 }
 
 static int lf_on_dev_gc(lua_State *L) {
+  return 0;
 }
 
 int luaopen_on_devlib(lua_State *L) {
@@ -177,26 +177,6 @@ int luaopen_on_devlib(lua_State *L) {
 }
 
 // OFF Device
-
-static char *push_off_dev(lua_State *L, char * name) {
-  char *dev_name = reinterpret_cast<char *>(
-                lua_newuserdata(L, sizeof(char)*(strlen(name)+1)));
-  strncpy(dev_name, name, strlen(name)+1);
-  luaL_getmetatable(L, OFFDEVICE);
-  lua_setmetatable(L, -2);
-
-  return dev_name;
-}
-
-static char *chk_off_dev(lua_State *L, int index) {
-  char *dev_name;
-  luaL_checktype(L, index, LUA_TUSERDATA);
-  dev_name = reinterpret_cast<char *>(luaL_checkudata(L, index, OFFDEVICE));
-  if (dev_name == NULL)
-    luaL_error(L, "Argument error in Device");
-
-  return dev_name;
-}
 
 static int lf_off_dev_new(lua_State *L) {
   const char* str_name = luaL_checkstring(L, 1);
@@ -232,6 +212,7 @@ static int lf_off_dev_offopen(lua_State *L) {
 }
 
 static int lf_off_dev_gc(lua_State *L) {
+  return 0;
 }
 
 int luaopen_off_devlib(lua_State *L) {
