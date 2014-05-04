@@ -18,11 +18,14 @@
  *
  */
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include "args.h"
 
 #define ARGS        "args"
+
+using std::cerr;
 
 args* args::_instance = NULL;
 std::vector<std::string> args::items;
@@ -39,7 +42,11 @@ args* args::instance() {
 }
 
 std::string args::get(const size_t index) {
-  return items[index];
+  if ((index < 1) || (index > args::nargs())) {
+    std::cerr << "Warning: Argument out of data" << std::endl;
+    return std::string("");
+  }
+  return items[(index - 1)];
 }
 
 void args::insert(const std::string item) {
@@ -53,7 +60,7 @@ size_t args::nargs() {
 static int lf_args_get(lua_State *L) {
   size_t index = luaL_checkunsigned(L, 1);
 
-  if (index < args::nargs())
+  if (index <= args::nargs())
     lua_pushstring(L, args::get(index).c_str());
 
   return 1;
