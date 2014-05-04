@@ -87,9 +87,9 @@ endif()
 ## Set the flags for g++ compiler
 ##
 if (CMAKE_COMPILER_IS_GNUCXX)
-  set(CMAKE_CXX_FLAGS             "-std=c++11")
+  set(CMAKE_CXX_FLAGS   "-std=c++11")
 endif()
 
-install(TARGETS naphex RUNTIME DESTINATION bin)
+install(TARGETS naphex RUNTIME DESTINATION usr/bin)
 
 add_subdirectory(src)
