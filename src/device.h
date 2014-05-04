@@ -116,7 +116,7 @@ class device {
    * @return	Return true if the direction was set, or true if there were
    * 		some errors
    */
-  virtual bool setdirection(int d) {}
+  virtual bool setdirection(int d) {return false;}
 
   /**
    * sets whether promiscuous mode should be set on a capture handle when
@@ -129,7 +129,7 @@ class device {
    * @return	Return true if the promisc mode was set, and false if there were
    * 		some errors
    */
-  virtual bool setpromisc(int p) {}
+  virtual bool setpromisc(int p) {return false;}
 
   /**
    * sets whether monitor mode should be set on a capture handle when the handle
@@ -141,7 +141,7 @@ class device {
    * @return	Return true if the promisc mode was set, and false if there were
    * 		some errors
    */
-  virtual bool setrfmonitor(int m) {}
+  virtual bool setrfmonitor(int m) {return false;}
 
   /**
    *  sets the read timeout that will be used on a capture handle when the
@@ -151,7 +151,7 @@ class device {
    * 
    * @return	Return true if the time was set, or false if there were some errors
    */
-  virtual bool settimeout(int t) {}
+  virtual bool settimeout(int t) {return false;}
 
   /**
    * Destructor
