@@ -90,6 +90,6 @@ if (CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS   "-std=c++11")
 endif()
 
-install(TARGETS naphex RUNTIME DESTINATION usr/bin)
+install(TARGETS naphex RUNTIME DESTINATION bin)
 
 add_subdirectory(src)
