@@ -4,9 +4,10 @@
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
+#include "define.h"
 
 #define IEEE082_11NAME "ieee802_11"
-#define MYVERSION       "0.0.0"
+#define MYVERSION       NAPHEX_VERSION_STR
 
 struct _ieee802_11 {
   u_char *frame;

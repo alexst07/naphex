@@ -4,9 +4,10 @@
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
+#include "define.h"
 
 #define IP4VNAME "ipv4"
-#define MYVERSION "0.0.0"
+#define MYVERSION NAPHEX_VERSION_STR
 
 struct _ipv4_packet {
   u_char *packet;

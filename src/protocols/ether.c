@@ -4,9 +4,10 @@
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
+#include "define.h"
 
 #define ETHERNAME "ether"
-#define MYVERSION "0.0.0"
+#define MYVERSION NAPHEX_VERSION_STR
 
 #define MAX_FRAME_BYTES 1518
 #define HEADER_SIZE     14
