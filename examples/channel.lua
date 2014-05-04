@@ -19,7 +19,8 @@ channel.create("channel1", "teste");
 
 pid = thread.new();
 pid:set_function("thread1");
-pid:set_file("../tests/channel_f.lua");
+pid:set_file("../examples/channel_f.lua");
+pid:set_file("../examples/channel_f.lua");
 pid:run();
 os.execute("sleep 2");
 pid:join();

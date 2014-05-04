@@ -27,8 +27,8 @@ dev2:open("eth0");
 
 print("con3");
 fdev = offdevice.new("con3");
-fdev:open("../tests/test1.pcap");
+fdev:open("../examples/test1.pcap");
 
 print("con4");
 fdev2 = offdevice.new("con4");
-fdev2:open("../tests/test1.pcap");
+fdev2:open("../examples/test1.pcap");

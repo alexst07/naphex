@@ -19,13 +19,13 @@
 
 mon = monitor.new("eth0");
 mon:dev_promisc(1);
-mon:set_file("../tests/monitor_f.lua");
+mon:set_file("../examples/monitor_f.lua");
 mon:set_filter("filter1");
 mon:set_action("action1");
 mon:run();
 
 mon1 = monitor.new("eth0");
-mon1:set_file("../tests/monitor_f.lua");
+mon1:set_file("../examples/monitor_f.lua");
 mon1:set_filter("filter2");
 mon1:set_action("action2");
 mon1:run();

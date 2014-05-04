@@ -17,7 +17,7 @@
 
 wf = wait_filter.new("eth0");
 wf:dev_promisc(1);
-wf:set_file("../tests/waitfilter_f.lua");
+wf:set_file("../examples/waitfilter_f.lua");
 wf:set_filter("wfilter");
 wf:set_maxtime(2);
 wf:wait()
