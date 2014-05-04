@@ -21,6 +21,10 @@
 #ifndef NAPHEX_DEBUG_H
 #define NAPHEX_DEBUG_H
 
+#include <iostream>
+
+using std::cerr;
+
 #ifndef NDEBUG
 static int nph_debug_level = 5;
 #endif
@@ -37,7 +41,7 @@ class Debug {
   Debug& operator<<(T const& t) {
 #ifndef NDEBUG
     if (m_output) {
-      std::cerr << t << std::endl;
+      cerr << t << std::endl;
       return *this;
     }
     else
