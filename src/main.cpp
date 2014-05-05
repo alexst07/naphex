@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
   }
 
   if (argc < 2)  {
-    fprintf(stderr, "File expected\n");
+    print_usage();
     exit(EXIT_FAILURE);
   }
 
