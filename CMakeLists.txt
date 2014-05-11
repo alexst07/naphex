@@ -41,11 +41,19 @@ set (NAPHEX_VERSION_RELEASE 1)
 set (NAPHEX_VERSION "${naphex_VERSION_MAJOR}.${naphex_VERSION_MINOR}.${naphex_VERSION_RELEASE}")
 
 ##
-## Set debug mode if is running as debug mode
+## Set naphex install path
 ##
-if( CMAKE_BUILD_TYPE STREQUAL "Release") 
-  set (NAPHEX_DEBUG "#define NDEBUG")
-endif()
+set (NAPHEX_INSTALL_DEST bin)
+
+##
+## Set the lib install path
+##
+set (NAPHEX_INSTALL_LIB_PATH lib/naphex)
+
+##
+## Set config install path
+##
+set (NAPHEX_INSTALL_CONF_PATH etc/naphex)
 
 ##
 ## configure a header file to pass some of the CMake settings
@@ -55,6 +63,26 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/src/define.h.in"
   "${PROJECT_BINARY_DIR}/include/define.h"
   )
+
+##
+## configure the configuration file
+##
+configure_file (
+  "${PROJECT_SOURCE_DIR}/naphex.conf.in"
+  "${PROJECT_BINARY_DIR}/naphex.conf"
+  )
+
+##
+## Set debug mode if is running as debug mode
+##
+if( CMAKE_BUILD_TYPE STREQUAL "Release") 
+  set (NAPHEX_DEBUG "#define NDEBUG")
+endif ()
+
+##
+## Set extension dir
+##
+set (NAPHEX_EXT_DIR "${CMAKE_INSTALL_PREFIX}/${NAPHEX_INSTALL_LIB_PATH}")
 
 ##
 ## add the binary tree to the search path for include files
@@ -81,6 +109,7 @@ add_executable(naphex
               ${CMAKE_CURRENT_SOURCE_DIR}/src/off_device.cpp
               ${CMAKE_CURRENT_SOURCE_DIR}/src/on_device.cpp
               ${CMAKE_CURRENT_SOURCE_DIR}/src/monitor.cpp
+              ${CMAKE_CURRENT_SOURCE_DIR}/src/config_imp.cpp
               ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 
 ##
@@ -125,7 +154,12 @@ if (CMAKE_COMPILER_IS_GNUCXX)
   set ( CMAKE_CXX_FLAGS_DEBUG  "-Wall -g" )
 endif()
 
-install (TARGETS naphex RUNTIME DESTINATION bin)
+##
+## Set the install targets
+##
+install (TARGETS naphex RUNTIME DESTINATION ${NAPHEX_INSTALL_DEST})
+install (FILES "${PROJECT_BINARY_DIR}/naphex.conf" DESTINATION
+         ${NAPHEX_INSTALL_CONF_PATH})
 
 add_subdirectory (src)
 
