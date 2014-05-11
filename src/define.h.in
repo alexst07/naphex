@@ -23,6 +23,6 @@
 /**
  * Define the config file path
  */
-#define NAPHEX_CONFIG_FILE      "/etc/naphex/naphex.config"
+#define NAPHEX_CONFIG_FILE      "@NAPHEX_CONFIG_FILE@"
 
 #endif  //NAPHEX_DEFINE_H

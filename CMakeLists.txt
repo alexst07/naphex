@@ -38,7 +38,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set (NAPHEX_VERSION_MAJOR 0)
 set (NAPHEX_VERSION_MINOR 0)
 set (NAPHEX_VERSION_RELEASE 1)
-set (NAPHEX_VERSION "${naphex_VERSION_MAJOR}.${naphex_VERSION_MINOR}.${naphex_VERSION_RELEASE}")
+set (NAPHEX_VERSION 
+    "${NAPHEX_VERSION_MAJOR}.${NAPHEX_VERSION_MINOR}.${NAPHEX_VERSION_RELEASE}")
 
 ##
 ## Set naphex install path
@@ -56,6 +57,24 @@ set (NAPHEX_INSTALL_LIB_PATH lib/naphex)
 set (NAPHEX_INSTALL_CONF_PATH etc/naphex)
 
 ##
+## Set debug mode if is running as debug mode
+##
+if( CMAKE_BUILD_TYPE STREQUAL "Release") 
+  set (NAPHEX_DEBUG "#define NAPHEX_NDEBUG")
+endif ()
+
+##
+## Set configuration file path
+##
+set (NAPHEX_CONFIG_FILE 
+    "${CMAKE_INSTALL_PREFIX}/${NAPHEX_INSTALL_CONF_PATH}/naphex.conf")
+
+##
+## Set extension dir
+##
+set (NAPHEX_EXT_DIR "${CMAKE_INSTALL_PREFIX}/${NAPHEX_INSTALL_LIB_PATH}")
+
+##
 ## configure a header file to pass some of the CMake settings
 ## to the source code
 ##
@@ -71,18 +90,6 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/naphex.conf.in"
   "${PROJECT_BINARY_DIR}/naphex.conf"
   )
-
-##
-## Set debug mode if is running as debug mode
-##
-if( CMAKE_BUILD_TYPE STREQUAL "Release") 
-  set (NAPHEX_DEBUG "#define NDEBUG")
-endif ()
-
-##
-## Set extension dir
-##
-set (NAPHEX_EXT_DIR "${CMAKE_INSTALL_PREFIX}/${NAPHEX_INSTALL_LIB_PATH}")
 
 ##
 ## add the binary tree to the search path for include files
@@ -151,7 +158,8 @@ endif()
 ##
 if (CMAKE_COMPILER_IS_GNUCXX)
   set (CMAKE_CXX_FLAGS   "-std=c++11")
-  set ( CMAKE_CXX_FLAGS_DEBUG  "-Wall -g" )
+  set (CMAKE_CXX_FLAGS_DEBUG  "-Wall -g" )
+  set (CMAKE_C_FLAGS_DEBUG  "-Wall -g" )
 endif()
 
 ##

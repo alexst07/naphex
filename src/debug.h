@@ -24,6 +24,10 @@
 #include <iostream>
 #include "define.h"
 
+#ifdef NAPHEX_NDEBUG
+# define NDEBUG
+#endif
+
 using std::cerr;
 
 #ifndef NDEBUG

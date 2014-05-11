@@ -35,7 +35,6 @@ using std::list;
 using std::string;
 
 static const char *lua_filename = NULL;
-static const char *ext_dir = NULL;
 
 void set_lua_filename(const char *name);
 
