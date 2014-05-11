@@ -27,6 +27,7 @@
 #include "args.h"
 #include "debug.h"
 #include "define.h"
+#include "config_imp.h"
 
 void print_usage() {
   std::cout << "version: " << NAPHEX_VERSION_STR << std::endl;
@@ -36,10 +37,10 @@ void print_usage() {
 
   std::cout << "options:" << std::endl;
   std::cout 
-  << "  -v,  --version\toutput version information and exit" << std::endl
-  << "  -f,  --file\t\t\tspecify the main lua file" << std::endl
-  << "  -l,  --lfile\t\t\tspecify the function lua file" << std::endl
-  << "  -h,  --help\t\t\tdisplay this help and exit" << std::endl;
+  << "  -v,  --version    output version information and exit" << std::endl
+  << "  -f,  --file       specify the main lua file" << std::endl
+  << "  -l,  --lfile      specify the function lua file" << std::endl
+  << "  -h,  --help       display this help and exit" << std::endl;
 }
 
 int main(int argc, char **argv) {
@@ -126,6 +127,15 @@ int main(int argc, char **argv) {
 
   luaL_requiref(L, "args", &luaopen_argslib, 1);
   lua_pop(L, 1);
+
+  config *conf = new config_imp();
+
+  if (!conf->load_protocols()) {
+    std::cerr << "WARNING: Can't load protocols libs" << std::endl;
+    exit(-1);
+  }
+
+  delete conf;
 
   if (luaL_loadfile(L, file.c_str()) != 0)  {
     fprintf(stderr, "Could not load: %s\n", file.c_str());

@@ -17,7 +17,13 @@
  *
  */
 
+#include <string.h>
+#include <dlfcn.h>
+#include <iostream>
+#include <list>
+#include <string>
 #include "lua_utils.h"
+#include "debug.h"
 
 void set_lua_filename(const char *name) {
   lua_filename = name;
@@ -161,4 +167,97 @@ void laction_func(lua_State *L, const char *func, const u_char *packet,
 
   if (lua_pcall(L, 2, 0, 0) != 0)
     luaL_error(L, "error calling '%s': %s", func, lua_tostring(L, -1));
+}
+
+bool llib_load(list<string> & libs, lua_State *L, const string &path) {
+  void *handle;
+  int (*fnc_call)(lua_State *);
+  char *error;
+  std::string str_lib_name;
+  std::string str_fnc_name;
+
+  for (list<string>::iterator it = libs.begin(); it != libs.end(); it++) {
+    str_lib_name = path + "lib" + *it + ".so";
+
+    handle = dlopen(str_lib_name.c_str(), RTLD_LAZY);
+    if (!handle) {
+      std::cerr << "Error: " << dlerror() << std::endl;
+      return false;
+    }
+
+    dlerror();    /* Clear any existing error */
+
+    str_fnc_name = "luaopen_" + *it + "lib";
+    *(void **) (&fnc_call) = dlsym(handle, str_fnc_name.c_str());
+
+    if ((error = dlerror()) != NULL)  {
+      std::cerr << "Error: " << dlerror() << std::endl;
+      return false;
+    }
+
+    //(*fnc_call)(L);
+    luaL_requiref(L, (*it).c_str(), fnc_call, 1);
+    lua_pop(L, 1);
+
+    dlclose(handle);
+  }
+
+  return true;
+}
+
+bool conf_load(lua_State *L, const string &file) {
+  L = luaL_newstate();
+  if (luaL_loadfile(L, file.c_str()) != 0)  {
+    fprintf(stderr, "Could not load: %s\n", file.c_str());
+    return false;
+  }
+
+  if (lua_pcall(L, 0, 0, 0) != 0)  {
+    fprintf(stderr, "Error: %s\n", lua_tostring(L, -1));
+    lua_pop(L, 1);
+    return false;
+  }
+
+  return true;
+}
+
+bool load_string(lua_State *L, const string &field, string &value) {
+  lua_getglobal(L, field.c_str());
+
+  if (!lua_isstring(L, -1)) {
+    Debug(5) << "Should be a string";
+    return false;
+  }
+
+  value = lua_tostring(L, -1);
+  return true;
+}
+
+bool load_int(lua_State *L, const string &field, int &value) {
+  lua_getglobal(L, field.c_str());
+
+  if (!lua_isnumber(L, -1)) {
+    Debug(5) << "Should be a string";
+    return false;
+  }
+
+  value = lua_tointeger(L, -1);
+  return true;
+}
+
+void conf_close(lua_State *L) {
+  lua_close(L);
+}
+
+void get_libs(lua_State *L, string table, list<string> & libs) {
+  libs.clear();
+  lua_getglobal(L, table.c_str());
+  lua_pushnil(L);
+
+  while(lua_next(L, -2) != 0) {
+    if(lua_isstring(L, -1))
+      libs.push_back(lua_tostring(L, -1));
+
+    lua_pop(L, 1);
+  }
 }

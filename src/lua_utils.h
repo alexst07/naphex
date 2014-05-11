@@ -28,9 +28,14 @@ extern "C" {
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <list>
+#include <string>
+
+using std::list;
+using std::string;
 
 static const char *lua_filename = NULL;
+static const char *ext_dir = NULL;
 
 void set_lua_filename(const char *name);
 
@@ -43,5 +48,16 @@ void lfiler_func(lua_State *L, const char *func, const u_char *packet,
 void laction_func(lua_State *L, const char *func, const u_char *packet,
                   u_int len);
 
+bool llib_load(list<string> & libs, lua_State *L, const string &path);
+
+bool conf_load(lua_State *L, const string &file);
+
+void get_libs(lua_State *L, string table, list<string> & libs);
+
+bool load_string(lua_State *L, const string &field, string &value);
+
+bool load_int(lua_State *L, const string &field, int &value);
+
+void conf_close(lua_State *L);
 
 #endif  // NAPHEX_LUA_UTILS_H

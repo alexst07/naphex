@@ -24,6 +24,7 @@
 #include "debug.h"
 #include "lua_utils.h"
 #include "args.h"
+#include "config_imp.h"
 
 monitor::monitor(string interface) {
   size_t pos = interface.find("file:");
@@ -246,6 +247,12 @@ void monitor::lua_openlibs() {
 
   luaL_requiref(L, "args", &luaopen_argslib, 1);
   lua_pop(L, 1);
+
+  config *conf = new config_imp();
+  if (!conf->load_protocols())
+    std::cerr << "WARNING: Can't load protocols libs" << std::endl;
+
+  delete conf;
 }
 
 void monitor::set_func_start(const char *func) {

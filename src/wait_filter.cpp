@@ -25,6 +25,7 @@
 #include "off_device.h"
 #include "debug.h"
 #include "args.h"
+#include "config_imp.h"
 
 wait_filter::wait_filter(string interface) {
   size_t pos = interface.find("file:");
@@ -251,6 +252,13 @@ wait_filter::lua_openlibs() {
 
   luaL_requiref(L, "args", &luaopen_argslib, 1);
   lua_pop(L, 1);
+
+  config *conf = new config_imp();
+
+  if (!conf->load_protocols())
+    std::cerr << "WARNING: Can't load protocols libs" << std::endl;
+
+  delete conf;
 }
 
 bool

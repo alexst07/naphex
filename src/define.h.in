@@ -20,4 +20,9 @@
  */
 @NAPHEX_DEBUG@
 
+/**
+ * Define the config file path
+ */
+#define NAPHEX_CONFIG_FILE      "/etc/naphex/naphex.config"
+
 #endif  //NAPHEX_DEFINE_H

@@ -47,6 +47,7 @@ class config_imp : public config {
 
  private:
   lua_State *L;
+  bool loaded;
 };
 
 #endif  // NAPHEX_CONFIG_IMP_H

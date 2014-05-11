@@ -11,7 +11,7 @@
 --
 -- Path where are the libs
 --
-extension_dir = "/usr/local/lib"
+extension_dir = "@NAPHEX_EXT_DIR@"
 
 --
 -- Extensions loaded

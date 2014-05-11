@@ -20,6 +20,12 @@
 #ifndef NAPHEX_MONITOR_H
 #define NAPHEX_MONITOR_H
 
+extern "C" {
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+}
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pcap/pcap.h>

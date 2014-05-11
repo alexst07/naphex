@@ -22,6 +22,7 @@
 #include "debug.h"
 #include "lua_utils.h"
 #include "args.h"
+#include "config_imp.h"
 
 nph_thread::nph_thread() {
   this->is_running = false;
@@ -118,6 +119,12 @@ nph_thread::lua_openlibs() {
 
   luaL_requiref(L, "args", &luaopen_argslib, 1);
   lua_pop(L, 1);
+
+  config *conf = new config_imp();
+  if (!conf->load_protocols())
+    std::cerr << "WARNING: Can't load protocols libs" << std::endl;
+
+  delete conf;
 }
 
 void

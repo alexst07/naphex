@@ -27,12 +27,15 @@
 using std::string;
 
 config_imp::config_imp() {
-  conf_load(this->L, NAPHEX_CONFIG_FILE);
+  this->loaded = conf_load(this->L, NAPHEX_CONFIG_FILE);
 }
 
 bool config_imp::load_protocols() {
   list<string> libs;
   string path;
+
+  if (!this->loaded)
+    return false;
 
   get_libs(this->L, LUA_LIBS_TABLE, libs);
   if (!load_string(this->L, LUA_LIBS_PATH, path))
@@ -45,5 +48,6 @@ bool config_imp::load_protocols() {
 }
 
 config_imp::~config_imp() {
-  conf_close(this->L);
+  if (this->loaded)
+    conf_close(this->L);
 }
