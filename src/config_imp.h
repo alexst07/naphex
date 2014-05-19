@@ -33,7 +33,7 @@ class config_imp : public config {
   /**
    * Constructor
    */
-  config_imp();
+  config_imp(lua_State *L_lib);
 
   /**
    * override load_protocols method
@@ -47,6 +47,7 @@ class config_imp : public config {
 
  private:
   lua_State *L;
+  lua_State *L_lib;
   bool loaded;
 };
 

@@ -51,7 +51,7 @@ bool llib_load(list<string> & libs, lua_State *L, const string &path);
 
 bool conf_load(lua_State *L, const string &file);
 
-void get_libs(lua_State *L, string table, list<string> & libs);
+void get_libs(lua_State *L, const string & table, list<string> & libs);
 
 bool load_string(lua_State *L, const string &field, string &value);
 

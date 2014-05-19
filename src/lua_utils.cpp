@@ -171,15 +171,17 @@ void laction_func(lua_State *L, const char *func, const u_char *packet,
 
 bool llib_load(list<string> & libs, lua_State *L, const string &path) {
   void *handle;
-  int (*fnc_call)(lua_State *);
+  lua_CFunction fnc_call;
+//   int (*fnc_call)(lua_State *);
   char *error;
   std::string str_lib_name;
   std::string str_fnc_name;
 
+  luaL_getsubtable(L, LUA_REGISTRYINDEX, "_PRELOAD");
   for (list<string>::iterator it = libs.begin(); it != libs.end(); it++) {
-    str_lib_name = path + "lib" + *it + ".so";
+    str_lib_name = path + "/lib" + *it + ".so";
 
-    handle = dlopen(str_lib_name.c_str(), RTLD_LAZY);
+    handle = dlopen(str_lib_name.c_str(), RTLD_LOCAL | RTLD_LAZY);
     if (!handle) {
       std::cerr << "Error: " << dlerror() << std::endl;
       return false;
@@ -187,26 +189,38 @@ bool llib_load(list<string> & libs, lua_State *L, const string &path) {
 
     dlerror();    /* Clear any existing error */
 
-    str_fnc_name = "luaopen_" + *it + "lib";
-    *(void **) (&fnc_call) = dlsym(handle, str_fnc_name.c_str());
+    str_fnc_name = "luaopen_" + *it;
+    fnc_call = (lua_CFunction) dlsym(handle, str_fnc_name.c_str());
 
-    if ((error = dlerror()) != NULL)  {
-      std::cerr << "Error: " << dlerror() << std::endl;
+    if (fnc_call == NULL)  {
+      std::cerr << "Error: Could not load: " << str_fnc_name << std::endl << dlerror() << std::endl;
       return false;
     }
 
-    //(*fnc_call)(L);
-    luaL_requiref(L, (*it).c_str(), fnc_call, 1);
-    lua_pop(L, 1);
+//     luaL_requiref(L, "monitor", &luaopen_monlib, 1);
+//      (*fnc_call)(L);
+     Debug(5) << str_fnc_name;
 
+     luaL_requiref(L, it->c_str(), fnc_call, 1);
+     lua_pop(L, 1);
+
+    lua_pushcfunction(L, fnc_call);
+    lua_setfield(L, -2, it->c_str());
     dlclose(handle);
   }
+
+//   for (list<string>::iterator it = libs.begin(); it != libs.end(); it++) {
+// 
+//     lua_pushcfunction(L, fnc_call);
+//     lua_setfield(L, -2, it->c_str());
+//   }
+
+  lua_pop(L, 1); 
 
   return true;
 }
 
 bool conf_load(lua_State *L, const string &file) {
-  L = luaL_newstate();
   if (luaL_loadfile(L, file.c_str()) != 0)  {
     fprintf(stderr, "Could not load: %s\n", file.c_str());
     return false;
@@ -249,8 +263,10 @@ void conf_close(lua_State *L) {
   lua_close(L);
 }
 
-void get_libs(lua_State *L, string table, list<string> & libs) {
+void get_libs(lua_State *L, const string & table, list<string> & libs) {
   libs.clear();
+  Debug(5) << "Table: "<< table.c_str();
+
   lua_getglobal(L, table.c_str());
   lua_pushnil(L);
 

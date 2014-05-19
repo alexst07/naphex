@@ -26,28 +26,32 @@
 
 using std::string;
 
-config_imp::config_imp() {
+config_imp::config_imp(lua_State *L_lib) {
+  this->L = luaL_newstate();
+  this->L_lib = L_lib;
   this->loaded = conf_load(this->L, NAPHEX_CONFIG_FILE);
 }
 
 bool config_imp::load_protocols() {
-  list<string> libs;
   string path;
 
-  if (!this->loaded)
-    return false;
-
-  get_libs(this->L, LUA_LIBS_TABLE, libs);
   if (!load_string(this->L, LUA_LIBS_PATH, path))
     return false;
 
-  if (!llib_load(libs, this->L, path))
-    return false;
+  path = path + "/?.lua";
+  lua_getglobal( this->L_lib, "package" );
+  lua_getfield( this->L_lib, -1, "path" );
+  string cur_path = lua_tostring( this->L_lib, -1 );
+  cur_path.append( ";" );
+  cur_path.append( path.c_str() );
+  lua_pop( this->L_lib, 1 );
+  lua_pushstring( this->L_lib, cur_path.c_str() );
+  lua_setfield( this->L_lib, -2, "path" );
+  lua_pop( this->L_lib, 1 );
 
   return true;
 }
 
 config_imp::~config_imp() {
-  if (this->loaded)
-    conf_close(this->L);
+  lua_close(this->L);
 }

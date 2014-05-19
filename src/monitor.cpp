@@ -248,7 +248,7 @@ void monitor::lua_openlibs() {
   luaL_requiref(L, "args", &luaopen_argslib, 1);
   lua_pop(L, 1);
 
-  config *conf = new config_imp();
+  config *conf = new config_imp(this->L);
   if (!conf->load_protocols())
     std::cerr << "WARNING: Can't load protocols libs" << std::endl;
 
