@@ -11,3 +11,20 @@
 *.lai
 *.la
 *.a
+
+# Project file
+*.kdev4
+
+# Kdevelop ~ files
+*.c~
+*.h~
+*.cpp~
+*.lua~
+*.in~
+*.txt~
+*.md~
+*.cmake~
+
+# Directories
+build/
+install/
