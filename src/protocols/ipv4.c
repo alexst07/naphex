@@ -299,7 +299,7 @@ static const luaL_Reg R[] =
   { NULL,                         NULL }
 };
 
-LUALIB_API int luaopen_libipv4(lua_State *L) {
+LUALIB_API int luaopen_ipv4(lua_State *L) {
   luaL_newmetatable(L,IP4VNAME);
   luaL_setfuncs(L,R,0);
   lua_pushliteral(L,"version");                  /** version */

@@ -5,6 +5,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 #include "define.h"
+#include "cdebug.h"
 
 #define ETHERNAME "ether"
 #define MYVERSION NAPHEX_VERSION_STR
@@ -48,11 +49,13 @@ static ETHER_FRAME *push_ether(lua_State *L) {
 }
 
 static int ether_new(lua_State *L) {
+  printf ("Teste ether");
   int argc = lua_gettop(L);
   size_t len;
   
   ETHER_FRAME *ether = push_ether(L);
-  
+  assert(ether != NULL);
+
   if (argc == 1) {
     const char *lpack = luaL_checklstring(L, 1, &len);
 
@@ -63,6 +66,7 @@ static int ether_new(lua_State *L) {
     else
       ether->frame = (u_char *) calloc(len, sizeof(u_char));
 
+    assert(ether->frame != NULL);
     memcpy(ether->frame, lpack, len);
     ether->size = len;
   }
@@ -320,8 +324,9 @@ static int ether_gc(lua_State *L) {
   return 0;
 }
 
-static const luaL_Reg R[] =
-{
+LUALIB_API int luaopen_ether(lua_State *L) {
+  static const luaL_Reg R[] =
+  {
   { "__gc",                       ether_gc },
   { "__tostring",                 ether_tostring },
   { "new",                        ether_new },
@@ -336,9 +341,8 @@ static const luaL_Reg R[] =
   { "payload_size",               ether_payload_size },
   { "set_frame",                  ether_set_frame },
   { NULL,                         NULL }
-};
+  };
 
-LUALIB_API int luaopen_ether(lua_State *L) {
   luaL_newmetatable(L,ETHERNAME);
   luaL_setfuncs(L,R,0);
   lua_pushliteral(L,"version");                  /** version */
