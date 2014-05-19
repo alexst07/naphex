@@ -18,6 +18,5 @@ extension_dir = "@NAPHEX_EXT_DIR@"
 --
 extensions = {
   "ether",
-  "ipv4",
-  "ie802_11"
+  "ipv4"
 }
