@@ -15,7 +15,6 @@
 --  You should have received a copy of the GNU General Public License
 --  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-print(package.path)
 local ether = require "ether"
 
 function filter (packet, len)
@@ -24,8 +23,9 @@ function filter (packet, len)
 end
 
 function action (packet, len)
-  print("Packet: " .. len .. "\n");
+  print("Packet: " .. len);
   frame = ether.new(packet)
   print("source host: " .. frame:get_shost(1))
   print("dest host: " .. frame:get_dhost(1))
+  print()
 end
