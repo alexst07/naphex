@@ -46,7 +46,7 @@ class Debug {
   Debug& operator<<(T const& t) {
 #ifndef NDEBUG
     if (m_output) {
-      cerr << t << std::endl;
+      cerr << t;
       return *this;
     }
     else
