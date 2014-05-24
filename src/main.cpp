@@ -31,12 +31,12 @@
 
 void print_usage() {
   std::cout << "version: " << NAPHEX_VERSION_STR << std::endl;
-  std::cout << 
+  std::cout <<
   "usage: naphex [--version] [--file=<path>] [--lfile=<path>] [args]"
   << std::endl << std::endl;
 
   std::cout << "options:" << std::endl;
-  std::cout 
+  std::cout
   << "  -v,  --version    output version information and exit" << std::endl
   << "  -f,  --file       specify the main lua file" << std::endl
   << "  -l,  --lfile      specify the function lua file" << std::endl
@@ -70,14 +70,14 @@ int main(int argc, char **argv) {
         print_usage();
         exit(0);
         break;
-      
+
       case 'l':
         use_lf = true;
         break;
 
       case 'f':
         use_f = true;
-        break;      
+        break;
 
       default:
         std::cout << "unknown option" << std::endl;
@@ -96,28 +96,28 @@ int main(int argc, char **argv) {
 
   if (use_lf && (argc > 2))
     set_lua_filename(argv[optind++]);
-    
+
   for(; optind < argc; optind++) {
     Debug(5) << "Argument" << optind << ":" << argv[optind];
     args::insert(argv[optind]);
   }
 
   luaL_openlibs(L);
-  
+
   luaL_requiref(L, "monitor", &luaopen_monlib, 1);
-  lua_pop(L, 1); // requiref leaves the library table on the stack
+  lua_pop(L, 1);
 
   luaL_requiref(L, "wait_filter", &luaopen_wflib, 1);
-  lua_pop(L, 1); // requiref leaves the library table on the stack
+  lua_pop(L, 1);
 
   luaL_requiref(L, "thread", &luaopen_threadlib, 1);
-  lua_pop(L, 1); // requiref leaves the library table on the stack
+  lua_pop(L, 1);
 
   luaL_requiref(L, "ondevice", &luaopen_on_devlib, 1);
-  lua_pop(L, 1); // requiref leaves the library table on the stack
+  lua_pop(L, 1);
 
   luaL_requiref(L, "offdevice", &luaopen_off_devlib, 1);
-  lua_pop(L, 1);  
+  lua_pop(L, 1);
 
   luaL_requiref(L, "packet", &luaopen_packetlib, 1);
   lua_pop(L, 1);
@@ -127,6 +127,9 @@ int main(int argc, char **argv) {
 
   luaL_requiref(L, "args", &luaopen_argslib, 1);
   lua_pop(L, 1);
+
+  // Call the function to list all devices
+  luaopen_ldevfunc(L);
 
   config *conf = new config_imp(L);
 
