@@ -19,7 +19,7 @@
 
 /**
  * \file lualibs.h
- * 
+ *
  * In this file is declared the functions to create lua libs.
  * Lua libs can be called by other class that execute lua scripts
  * to allow the executions of lua functions
@@ -68,5 +68,10 @@ int luaopen_on_devlib(lua_State *L);
  * Create the lua lib to offline device
  */
 int luaopen_off_devlib(lua_State *L);
+
+/**
+ * Create the lua function to list all devices
+ */
+int luaopen_ldevfunc(lua_State *L);
 
 #endif  // NAPHEX_LUALIBS_H

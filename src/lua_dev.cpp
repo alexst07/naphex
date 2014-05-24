@@ -22,11 +22,14 @@ extern "C" {
 #include <lualib.h>
 #include <lauxlib.h>
 }
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netdb.h>
+
 #include "nph_device.h"
 #include "debug.h"
 
@@ -238,5 +241,136 @@ int luaopen_off_devlib(lua_State *L) {
   lua_settable(L, -3);                  // Stack: MyLib meta
   lua_pop(L, 1);                        // Stack: MyLib
 
+  return 1;
+}
+
+/**
+ * Lua function to list all devices
+ */
+
+#define IPTOSBUFFERS    12
+const char *iptos(u_long in) {
+  static char output[IPTOSBUFFERS][3*4+3+1];
+  static short which;
+  u_char *p;
+
+  p = reinterpret_cast<u_char *>(&in);
+  which = (which + 1 == IPTOSBUFFERS ? 0 : which + 1);
+  snprintf(output[which], sizeof(output[which]),"%d.%d.%d.%d", p[0], p[1], p[2], p[3]);
+  return output[which];
+}
+
+const char* ip6tos(struct sockaddr *sockaddr, char *address, int addrlen) {
+  socklen_t sockaddrlen;
+
+  #ifdef WIN32
+  sockaddrlen = sizeof(struct sockaddr_in6);
+  #else
+  sockaddrlen = sizeof(struct sockaddr_storage);
+  #endif
+
+
+  if(getnameinfo(sockaddr,
+      sockaddrlen,
+      address,
+      addrlen,
+      NULL,
+      0,
+      NI_NUMERICHOST) != 0) address = NULL;
+
+  return address;
+}
+
+static int lf_list_dev(lua_State *L) {
+  pcap_if_t *alldevs;
+  pcap_if_t *d;
+  int i=1, y=1;
+  char errbuf[PCAP_ERRBUF_SIZE];
+
+  // Retrieve the device list from the local machine
+  if (pcap_findalldevs(&alldevs, errbuf) == -1) {
+    luaL_error(L, "Error in find all devs:", errbuf);
+  }
+
+  lua_newtable(L);
+
+
+  // Put the device list in a Lua Table
+  for (d = alldevs; d; d = d->next)
+  {
+    lua_newtable(L);
+
+    pcap_addr_t *a;
+    char ip6str[128];
+
+    // name
+    lua_pushstring(L, d->name);
+    lua_setfield(L, -2, "name");
+    // Description
+    if (d->description)
+      lua_pushstring(L, d->description);
+    else
+      lua_pushstring(L, "");
+
+    lua_setfield(L, -2, "description");
+
+    lua_newtable(L);
+    // IP address
+    for(a=d->addresses;a;a=a->next) {
+      lua_newtable(L);
+      switch(a->addr->sa_family) {
+        case AF_INET: {
+          lua_pushinteger(L, 4);
+          lua_setfield(L, -2, "version");
+
+          if (a->addr) {
+            lua_pushstring(L, iptos(((struct sockaddr_in *)a->addr)->sin_addr.s_addr));
+            lua_setfield(L, -2, "addr");
+          }
+
+          if (a->netmask) {
+            lua_pushstring(L, iptos(((struct sockaddr_in *)a->netmask)->sin_addr.s_addr));
+            lua_setfield(L, -2, "netmask");
+          }
+
+          if (a->broadaddr) {
+            lua_pushstring(L, iptos(((struct sockaddr_in *)a->broadaddr)->sin_addr.s_addr));
+            lua_setfield(L, -2, "broadaddr");
+          }
+
+          if (a->dstaddr) {
+            lua_pushstring(L, iptos(((struct sockaddr_in *)a->dstaddr)->sin_addr.s_addr));
+            lua_setfield(L, -2, "dstaddr");
+          }
+        } break;
+
+        case AF_INET6: {
+          lua_pushinteger(L, 6);
+          lua_setfield(L, -2, "version");
+
+          if (a->addr) {
+            lua_pushstring(L, ip6tos(a->addr, ip6str, sizeof(ip6str)));
+            lua_setfield(L, -2, "addr");
+          }
+        } break;
+
+        default: {
+          lua_pushinteger(L, a->addr->sa_family);
+          lua_setfield(L, -2, "version");
+        }
+      }
+      lua_rawseti(L, -2, y++);
+    }
+
+    lua_setfield(L, -2, "ip");
+    lua_rawseti(L, -2, i++);
+  }
+
+
+  return 1;
+}
+
+int luaopen_ldevfunc(lua_State *L) {
+  lua_register(L, "list_all_devs", lf_list_dev);
   return 1;
 }
