@@ -55,7 +55,7 @@ class monitor {
  public:
   /**
    * Constructor
-   * 
+   *
    * @param interface	Specifies the network device interface
    * 			to be monitored, ex: eth0, eth1
    */
@@ -99,39 +99,30 @@ class monitor {
 
   /**
    * \brief Set the start function
-   * 
+   *
    * Start function is executed only one time before to start
    * the pcap loop
    */
   void set_func_start(const char *func);
 
   /**
-   * \brief Set the filter function
-   * 
-   * Filter function is executed inside the loop to filter packets
-   * according the lua function defined by the user
+   * \brief Set the main monitor function
+   *
+   * main function is executed in the loop, and it is reponsible
+   * to process packet in the loop
    */
-  void set_func_filter(const char *func);
-
-  /**
-   * \brief Set the action function
-   * 
-   * Action function is executed inside the pcap loop, and every time
-   * that the filter function return true, the action function is
-   * executed
-   */
-  void set_func_action(const char *func);
+  void set_main_func(const char *func);
 
   /**
    * \brief Set the end function
-   * 
+   *
    * The end function is executed when exit is called
    */
   void set_func_end(const char *func);
 
   /**
    * \brief Set break function
-   * 
+   *
    * Break function is executued inside the pcap loop
    * and when it returns true the pcap loop is broken
    */
@@ -139,7 +130,7 @@ class monitor {
 
   /**
    * \brief Specifies the lua file
-   * 
+   *
    * The Lua file contains the Lua functions used in the monitor,
    * it can be spent on implementation of naphex by command line,
    * or can be passed in the call monitor
@@ -152,14 +143,9 @@ class monitor {
   const char* get_func_start() const;
 
   /**
-   * Gets the filter function
+   * Gets the main function name
    */
-  const char* get_func_filter() const;
-
-  /**
-   * Gets the action function
-   */
-  const char* get_func_action() const;
+  const char* get_main_func() const;
 
   /**
    * Gets the end function
@@ -180,10 +166,10 @@ class monitor {
   * is used to specify a direction that packets will be captured.
   * d is one of the constants PCAP_D_IN, PCAP_D_OUT or PCAP_D_INOUT.
   * PCAP_D_IN will only capture packets received by the device,
-  * PCAP_D_OUT will only capture packets sent by the device and 
+  * PCAP_D_OUT will only capture packets sent by the device and
   * PCAP_D_INOUT will capture packets received by or sent by the device.
-  * PCAP_D_INOUT is the default setting if this function is not called. 
-  * 
+  * PCAP_D_INOUT is the default setting if this function is not called.
+  *
   * @param d	Specifies the direction
   * @return	Return true if the direction was set, or true if there were
   * 		some errors
@@ -194,10 +180,10 @@ class monitor {
   * sets whether promiscuous mode should be set on a capture handle when
   * the handle is activated. If promisc is non-zero, promiscuous mode willbe set,
   * otherwise it will not be set
-  * 
+  *
   * @param p	Set the promisc mode, if p is different fo zero,
   * 		a promisc mode is set
-  * 
+  *
   * @return	Return true if the promisc mode was set, and false if there were
   * 		some errors
   */
@@ -207,9 +193,9 @@ class monitor {
   * sets whether monitor mode should be set on a capture handle when the handle
   * is activated. If rfmon is non-zero, monitor mode will be set, otherwise
   * it will not be set
-  * 
+  *
   * @param m	Set rf monitor mode if m is non-zero
-  * 
+  *
   * @return	Return true if the promisc mode was set, and false if there were
   * 		some errors
   */
@@ -218,9 +204,9 @@ class monitor {
   /**
   *  sets the read timeout that will be used on a capture handle when the
   * handle is activated to to_ms, which is in units of milliseconds
-  * 
+  *
   * @param t	Specifies the time in milliseconds
-  * 
+  *
   * @return	Return true if the time was set, or false if there were some errors
   */
   bool settimeout(int t);
@@ -230,11 +216,6 @@ class monitor {
    * Execute the lua start function
    */
   void start_func();
-
-  /** 
-   * Execute the lua filter function
-   */
-  bool filter(const struct pcap_pkthdr* pkthdr, const u_char * packet);
 
   /**
    * Execute the lua action function
@@ -246,7 +227,7 @@ class monitor {
    */
   bool break_loop(const struct pcap_pkthdr* pkthdr, const u_char * packet);
 
-  /** 
+  /**
    * Execute the lua end function
    */
   void end_func();
@@ -280,10 +261,8 @@ class monitor {
 
   string dev_interface;
   string lua_file;
-  std::mutex mtx_filter;
-  string func_filter;
-  std::mutex mtx_action;
-  string func_action;
+  std::mutex mtx_main_func;
+  string main_func;
   string func_start;
   std::mutex mtx_end;
   string func_end;

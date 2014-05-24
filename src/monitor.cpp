@@ -41,8 +41,7 @@ monitor::monitor(string interface) {
 
   this->L = luaL_newstate();
   this->started = false;
-  this->func_action = string("");
-  this->func_filter = string("");
+  this->main_func = string("");
   this->func_break = string("");
   this->func_end = string("");
   this->func_start = string("");
@@ -73,9 +72,8 @@ monitor::monitor(const monitor& mon) {
   this->loop_exit = mon.loop_exit.load(std::memory_order_relaxed);
 
   this->L = luaL_newstate();
-  this->func_action = mon.func_action;
+  this->main_func = mon.main_func;
   this->func_end = mon.func_end;
-  this->func_filter = mon.func_filter;
   this->func_start = mon.func_start;
   this->lua_file = mon.lua_file;
   this->func_break = mon.func_break;
@@ -111,8 +109,7 @@ void monitor::process_packet(u_char *arg, const struct pcap_pkthdr* pkthdr,
   if (mon->stop)
     return;
 
-  if (mon->filter(pkthdr, packet) == true)
-    mon->action(pkthdr, packet); 
+  mon->action(pkthdr, packet);
 
   if (mon->loop_exit)
     pcap_breakloop(mon->dev->get_descr());
@@ -183,29 +180,12 @@ void monitor::start_func() {
   }
 }
 
-bool monitor::filter(const struct pcap_pkthdr* pkthdr, const u_char * packet) {
-  this->mtx_filter.lock();
-  string str_func_filter = this->func_filter;
-  this->mtx_filter.unlock();
-
-  if (!str_func_filter.empty()) {
-    int filter_res;
-    lfiler_func(this->L, this->func_filter.c_str(),
-                packet, pkthdr->caplen, &filter_res);
-
-    if (filter_res == 1)
-      return true;
-  }
-
-  return false;
-}
-
 void monitor::action(const struct pcap_pkthdr* pkthdr, const u_char * packet) {
-  this->mtx_action.lock();
-  if (!this->func_action.empty()) {
-    laction_func(this->L, this->func_action.c_str(), packet, pkthdr->caplen);
+  this->mtx_main_func.lock();
+  if (!this->main_func.empty()) {
+    laction_func(this->L, this->main_func.c_str(), packet, pkthdr->caplen);
   }
-  this->mtx_action.unlock();
+  this->mtx_main_func.unlock();
 }
 
 void monitor::end_func() {
@@ -262,16 +242,10 @@ void monitor::set_func_start(const char *func) {
     this->func_start = func;
 }
 
-void monitor::set_func_filter(const char *func) {
-  this->mtx_filter.lock();
-  this->func_filter = func;
-  this->mtx_filter.unlock();
-}
-
-void monitor::set_func_action(const char *func) {
-  this->mtx_action.lock();
-  this->func_action = func;
-  this->mtx_action.unlock();
+void monitor::set_main_func(const char* func) {
+  this->mtx_main_func.lock();
+  this->main_func = func;
+  this->mtx_main_func.unlock();
 }
 
 void monitor::set_func_end(const char *func) {
@@ -297,12 +271,8 @@ const char* monitor::get_func_start() const {
   return this->func_start.c_str();
 }
 
-const char* monitor::get_func_filter() const {
-  return this->func_filter.c_str();
-}
-
-const char* monitor::get_func_action() const {
-  return this->func_action.c_str();
+const char* monitor::get_main_func() const {
+  return this->main_func.c_str();
 }
 
 const char* monitor::get_func_end() const {

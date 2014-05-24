@@ -66,26 +66,14 @@ static int lf_mon_new(lua_State *L) {
   return 1;
 }
 
-static int lf_mon_filter_set(lua_State *L) {
+static int lf_mon_main_func_set(lua_State *L) {
   monitor *mon = chk_monitor(L, 1);
 
   luaL_argcheck(L, mon != NULL, 1, "'Monitor' expected");
 
-  const char* str_filter = luaL_checkstring(L, 2);
-  luaL_argcheck(L, str_filter != NULL, 2, "Invalid string argument");
-  mon->set_func_filter(str_filter);
-
-  return 0;
-}
-
-static int lf_mon_action_set(lua_State *L) {
-  monitor *mon = chk_monitor(L, 1);
-
-  luaL_argcheck(L, mon != NULL, 1, "'Monitor' expected");
-
-  const char* str_action = luaL_checkstring(L, 2);
-  luaL_argcheck(L, str_action != NULL, 2, "Invalid string argument");
-  mon->set_func_action(str_action);
+  const char* str_func = luaL_checkstring(L, 2);
+  luaL_argcheck(L, str_func != NULL, 2, "Invalid string argument");
+  mon->set_main_func(str_func);
 
   return 0;
 }
@@ -144,19 +132,11 @@ static int lf_mon_break(lua_State *L) {
   return 0;
 }
 
-static int lf_mon_filter_get(lua_State *L) {
+static int lf_mon_main_func_get(lua_State *L) {
   monitor *mon = chk_monitor(L, 1);
   luaL_argcheck(L, mon != NULL, 1, "'Monitor' expected");
 
-  lua_pushstring(L, mon->get_func_filter());
-  return 1;
-}
-
-static int lf_mon_action_get(lua_State *L) {
-  monitor *mon = chk_monitor(L, 1);
-  luaL_argcheck(L, mon != NULL, 1, "'Monitor' expected");
-
-  lua_pushstring(L, mon->get_func_action());
+  lua_pushstring(L, mon->get_main_func());
   return 1;
 }
 
@@ -238,13 +218,11 @@ static int lf_mon_gc(lua_State *L) {
 
 int luaopen_monlib(lua_State *L) {
   static const luaL_Reg Obj_lib[] = {
-    { "set_action", &lf_mon_action_set },
-    { "set_filter", &lf_mon_filter_set },
+    { "set_fmain", &lf_mon_main_func_set },
     { "set_fstart", &lf_mon_start_set },
     { "set_fend", &lf_mon_end_set },
     { "set_file", &lf_mon_lfile_set },
-    { "get_filter", &lf_mon_filter_get },
-    { "get_action", &lf_mon_action_get },
+    { "get_fmain", &lf_mon_main_func_get },
     { "get_fstart", &lf_mon_start_get },
     { "get_file", &lf_mon_lfile_get },
     { "get_fend", &lf_mon_end_get },
