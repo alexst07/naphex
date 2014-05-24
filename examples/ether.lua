@@ -20,6 +20,5 @@
 mon = monitor.new("eth0");
 mon:dev_promisc(1);
 mon:set_file("../examples/ether_func.lua");
-mon:set_filter("filter");
-mon:set_action("action");
+mon:set_fmain("func");
 mon:run();

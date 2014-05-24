@@ -17,12 +17,7 @@
 
 local ether = require "ether"
 
-function filter (packet, len)
-  local r = true
-  return r
-end
-
-function action (packet, len)
+function func (packet, len)
   print("Packet: " .. len);
   frame = ether.new(packet)
   print("source host: " .. frame:get_shost(1))

@@ -15,23 +15,13 @@
 --  You should have received a copy of the GNU General Public License
 --  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function filter1 (packet, len)
-  local r = true
-  return r
-end
-
-function action1 (packet, len)
+function func1 (packet, len)
   print("Monitor 1: " .. len .. "\n");
   print(packet)
 end
 
-function filter2 (packet, len)
-  local r = true
-  return r
-end
 
-
-function action2 (packet, len)
+function func2 (packet, len)
   print("Monitor 2: " .. len .. "\n");
   print(packet)
 end
