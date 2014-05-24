@@ -16,7 +16,7 @@ extension_dir = "@NAPHEX_EXT_DIR@"
 --
 -- Extensions loaded
 --
-extensions = {
-  "ether",
-  "ipv4"
-}
+-- extensions = {
+--   "ether",
+--   "ipv4"
+-- }
