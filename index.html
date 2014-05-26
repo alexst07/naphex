@@ -1,2 +1,235 @@
-Naphex project
-<br>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Bootstrap, from Twitter</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="http://getbootstrap.com/assets/css/docs.min.css" rel="stylesheet">
+        <style type="text/css">
+            /* bootstrap 3 helpers */
+
+            .navbar-form input, .form-inline input {
+                width:auto;
+            }
+
+            header {
+                height:270px;
+            }
+            
+            #page-body {
+                margin-top: 100px;
+            }
+
+            @media (min-width: 979px) {
+                #sidebar.affix-top {
+                    position: static;
+                    margin-top:90px;
+                    width:228px;
+                }
+
+                #sidebar.affix {
+                    position: fixed;
+                    top:90px;
+                    width:228px;
+                }
+            }
+
+            .affix,.affix-top {
+                position:static;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+                    <div class="container">
+                        <h1>Naphex</h1>
+                    </div>
+                </nav>
+
+            </div>
+            <div class="row">
+                <div class="col-xs-1">
+                </div>
+                <div class="col-xs-3">
+                    <div class="list-group" id="sidebar">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <a href="#">Overview</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#">Monitors</a><br/>
+                                <a href="#">Configuring a device in monitor</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#">Devices</a><br/>
+                                <a href="#">Configuring a device</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#">Packets</a><br/>
+                                <a href="#">Choosing the Device</a><br/>
+                                <a href="#">Seding a packet</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#">Wait filters</a><br/>
+                                <a href="#">Configuring a device in wait filters</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#">Threads</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#">Channels</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#">Protocols</a><br/>
+                                <a href="#">Creating a protocol</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+                <div class="col-xs-7" id="page-body">
+                    <p><h2>Overview</h2></p>
+                    <p>Naphex is a software to monintor and inject packets in the network, it uses Lua language.</p>
+                    <p><h2>Monitor</h2></p>
+                    <p>Monitors is a object built to help to catch network packets, when called, the monitor create a thread that call the main function for every received packet.</p>
+                    <p>Consider the follow example:</p>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">monitor.lua</h3>
+                        </div>
+                        <div class="panel-body">
+                            mon = monitor.new("eth0");</br>
+                            mon:dev_promisc(1);</br>
+                            mon:set_file("monitor_functions.lua");</br>
+                            mon:set_fmain("func");</br>
+                            mon:run();
+                        </div>
+                    </div>
+                    <p><code>mon = monitor.new("eth0")</code></br>
+                    Create a new monitor objetct that monitors interface eth0</p>
+                    <p><code>mon:dev_promisc(1)</code></br>
+                    Set promisc mode on the monitored interface</p>
+                    <p><code>mon:set_file("monitor_functions.lua")</code></br>
+                    Set the file where are the functions which will be called by the monitor</p>
+                    <p><code>mon:set_fmain("func")</code></br>
+                    Set the main function of monitor, main function is called by the monitor every time that a packet is received</p>
+                    <p><code>mmon:run()</code></br>
+                    Starts the monitor, this function create a thread that runs the monitor</p>
+                    <p>The functions called by monitor needs to bee in other file, so we need two file, one to create the objects and other to create the functions. </p>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">monitor_functions.lua</h3>
+                        </div>
+                        <div class="panel-body">
+                            local ether = require "ether"</br>
+                            </br>
+                            function func (packet, len)</br>
+                            &nbsp; &nbsp; print("Packet len: " .. len);</br>
+                            &nbsp; &nbsp;  frame = ether.new(packet);</br>
+                            &nbsp; &nbsp;  print("source host: " .. frame:get_shost(1));</br>
+                            &nbsp; &nbsp;  print("dest host: " .. frame:get_dhost(1));</br>
+                            &nbsp; &nbsp;  print();</br>
+                            end
+                        </div>
+                    </div>
+                    <p><code>local ether = require "ether"</code></br>
+                    Call the library to handle ethernet packets</p>
+                    <p><code>function func (packet, len)</code></br>
+                    Create the function to process the packets, all main function in monitors object should have this format, two parameters, </br>
+                    <strong>packet:</strong> gets a string buffer containing the network packet received.</br>
+                    <strong>len:</strong> gets the lenght of the network packet received..</br></p>
+                    <p><code>print("Packet len: " .. len)</code></br>
+                    Prints the length of the received packet</p>
+                    <p><code>frame = ether.new(packet)</code></br>
+                    Create a new ethernet object, ethernet protocol will be explained in the protocols section</p>
+                    <p><code>print("source host: " .. frame:get_shost(1))</code></br>
+                    Print the source ethernet host, the 1 means mac format as xx:xx:xx:xx:xx:xx</p>
+                    <p><code>print("dest host: " .. frame:get_dhost(1))</code></br>
+                    Print the destination ethernet host, the 1 means mac format as xx:xx:xx:xx:xx:xx</p>
+                    <p><code>print()</code></br>
+                    Print a new line</p>
+                    <p><h2>Methods of monitor</h2></p>
+                    <p><code>monitor.new(iface)</code>: Creates a new monitor object.</br>
+                        iface is a string that indicates the system interface that will be monitored</p>
+                    <p><code>monitor:set_fmain(func)</code>: Sets the main function of the monitor.</br>
+                        func is a string that sets the main function of monitor, the main function is executed for every packet received</p>
+                    <p><code>monitor:set_fstart(func)</code>: Sets the start function of the monitor.</br>
+                        func is a string that sets the start function of monitor, the start function is called only one time when the monitor starts</p>
+                    <p><code>monitor:set_fend(iface)</code>: Sets the end function of the monitor.</br>
+                        func is a string that sets the end function of monitor, the end function is called only one time when the monitor ends</p>
+                    <p><code>monitor:set_file(file)</code>: Sets the file where are the functions called by the monitor, if no file is set, monitor calls the file passed on the command line. </br>
+                        file is a string with the name path and name of the file</p>
+                    <p><code>s = monitor:get_fmain()</code>: Gets the name of the main function of the monitor.</p>
+                    <p><code>s = monitor:get_fstart()</code>: Gets the name of the start function of the monitor.</p>
+                    <p><code>s = monitor:get_fend()</code>: Gets the name of the end function of the monitor.</p>
+                    <p><code>s = monitor:get_file()</code>: Gets the name of the file where are the function called by the monitor.</p>
+                    <p><code>monitor:dev_promisc(p)</code>: Sets the .</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Panel title</h3>
+                        </div>
+                        <div class="panel-body">
+                            Panel content
+                        </div>
+                    </div>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p>
+                    <p>sfsdf</p><p>sfsdf</p>
+                </div>
+                <div class="col-xs-1">
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+        <script src="http://getbootstrap.com/assets/js/docs.min.js"></script>
+        <script type='text/javascript'>
+
+            $(document).ready(function() {
+
+                $('#sidebar').affix({
+                    offset: {
+                        top: $('header').height()
+                    }
+                });
+
+
+            });
+
+        </script>
+    </body>
+</html>
