@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Bootstrap, from Twitter</title>
+        <title>Naphex</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
         <meta name="author" content="">
@@ -172,38 +172,38 @@
                     <p><code>s = monitor:get_fstart()</code>: Gets the name of the start function of the monitor.</p>
                     <p><code>s = monitor:get_fend()</code>: Gets the name of the end function of the monitor.</p>
                     <p><code>s = monitor:get_file()</code>: Gets the name of the file where are the function called by the monitor.</p>
-                    <p><code>monitor:dev_promisc(p)</code>: Sets the .</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
+                    <p><code>monitor:dev_promisc(p)</code>: Sets the interface of monitor to promiscuous mode.</br>
+                    p is a integer, where if equals 1, the monitor interface is set to promiscuous mode, if 0 is set to no promiscue mode, the default value is 1.</p>
+                    <p><code>monitor:dev_rfmonitor(r)</code>: Sets the interface of monitor to rf-monitor mode.</br>
+                    r is a integer, where if equals 1, the monitor interface is set to rf-monitor mode, if 0 is set to no rf-monitor mode, the default value is 0.</p>
+                    <p><code>monitor:dev_direction(d)</code>: Sets the direction of monitor interface , it means, if the monitor catches only input packets, output or the both.</br>
+                        d is a integer, where if d equals 0, set the direction to IN OUT, if d equals 1 set the direction to OUT, and if d equals 2 set the direction to IN, the default value is 0.</p>
+                    <p><code>monitor:dev_timeout(t)</code>: Sets the read timeout that will be used on a capture handle when the handle is activated to to_ms, which is in units of milliseconds.</br>
+                        t is a integer that sets the time in milliseconds, the default value is 500.</p>
+                    <p><code>monitor:run()</code>: This function creates a thread and starts the monitor, you need call this function to run the monitor.</p>
+                    <p><code>monitor:exit()</code>: Finishes the monitor, this function destroys the thread and call the function end().</p>
+                    </br>
+                    <p><h2>Devices</h2></p>
+                <p>Devices are objects that represents the interface, it means you can create a device object to represents the interface eth0, the main uses of device ojbects on Naphex is to inject packets in the network.</br>
+                    The devices objects can be accessed globally, it will be shown at the packet section.
+                </p>
+                    <p>In the example below we can see how to create a device object on Naphex.</p>
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Panel title</h3>
+                            <h3 class="panel-title">device.lua</h3>
                         </div>
                         <div class="panel-body">
-                            Panel content
+                            dev = ondevice.new("eth0_con");</br>
+                            dev:open("eth0");
                         </div>
                     </div>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p>
-                    <p>sfsdf</p><p>sfsdf</p>
+                    <p><code>dev = ondevice.new("eth0_con")</code></br>
+                        Creates a new device object, the name <code>eth0_con</code> can be accessed globally</p>
+                    <p><code>dev:open("eth0")</code></br>
+                        Opens the interface to do operations as send a packet</p>
+                    <p><h2>Methods of device</h2></p>
+                    <p><code>object = ondevice.new(name)</code>: Creates a new device object.</br>
+                        name is a string that represent the name of the device object, this name can be accessed globally. </p>
                 </div>
                 <div class="col-xs-1">
                 </div>
