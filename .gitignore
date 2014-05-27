@@ -25,6 +25,3 @@
 *.md~
 *.cmake~
 
-# Directories
-build/
-install/
