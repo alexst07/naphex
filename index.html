@@ -187,7 +187,11 @@
                 <p>Devices are objects that represents the interface, it means you can create a device object to represents the interface eth0, the main uses of device ojbects on Naphex is to inject packets in the network.</br>
                     The devices objects can be accessed globally, it will be shown at the packet section.
                 </p>
-                    <p>In the example below we can see how to create a device object on Naphex.</p>
+                <p>Naphex has two kinds of device object, ondevice and offdevice.</br>
+                    <strong>ondevice: </strong> It is a online device, it means, this object catches the real time packet traffic.</br>
+                    <strong>offdevice: </strong> It is a file that simulates a real packet traffic, it can be used to debug.</br>
+                </p>
+                    <p>In the example below we can see how to create a online device object on Naphex.</p>
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">device.lua</h3>
@@ -201,9 +205,11 @@
                         Creates a new device object, the name <code>eth0_con</code> can be accessed globally</p>
                     <p><code>dev:open("eth0")</code></br>
                         Opens the interface to do operations as send a packet</p>
-                    <p><h2>Methods of device</h2></p>
+                    <p><h2>Methods of online device</h2></p>
                     <p><code>object = ondevice.new(name)</code>: Creates a new device object.</br>
                         name is a string that represent the name of the device object, this name can be accessed globally. </p>
+                    <p><code>object = ondevice.open(device)</code>: open a device for capturing and sending of packets.</br>
+                        device is a string that specifies the network device to open. </p>
                 </div>
                 <div class="col-xs-1">
                 </div>
