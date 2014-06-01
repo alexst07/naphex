@@ -144,7 +144,7 @@
                     <p><code>local ether = require "ether"</code></br>
                     Call the library to handle ethernet packets</p>
                     <p><code>function func (packet, len)</code></br>
-                    Create the function to process the packets, all main function in monitors object should have this format, two parameters, </br>
+                    Creates the function to process the packets, all main function in monitors object should have this format, two parameters, </br>
                     <strong>packet:</strong> gets a string buffer containing the network packet received.</br>
                     <strong>len:</strong> gets the lenght of the network packet received..</br></p>
                     <p><code>print("Packet len: " .. len)</code></br>
@@ -206,10 +206,137 @@
                     <p><code>dev:open("eth0")</code></br>
                         Opens the interface to do operations as send a packet</p>
                     <p><h2>Methods of online device</h2></p>
-                    <p><code>object = ondevice.new(name)</code>: Creates a new device object.</br>
+                    <p><code>object = ondevice.new(name)</code>: Creates a new online device object.</br>
                         name is a string that represent the name of the device object, this name can be accessed globally. </p>
                     <p><code>object = ondevice.open(device)</code>: open a device for capturing and sending of packets.</br>
                         device is a string that specifies the network device to open. </p>
+                    <p><h2>Methods of offline device</h2></p>
+                    <p><code>object = ondevice.new(name)</code>: Creates a new offline device object.</br>
+                        name is a string that represent the name of the device object, this name can be accessed globally. </p>
+                    <p><code>object = ondevice.open(name)</code>: Open a saved capture file for reading.</br>
+                        name is a string that specifies the name of the file to open. </p>
+                    </br>
+                    <p><h2>Wait Filters</h2></p>
+                    <p>Wait Filters are objects that block the flow of execution until a condition is met.</p>
+                    <p>The following example shows the operation of the wait filters./</p>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">waitfilter.lua</h3>
+                        </div>
+                        <div class="panel-body">
+                            wf = wait_filter.new("eth0");</br>
+                            wf:dev_promisc(1);</br>
+                            wf:set_file("waitfilter_func.lua");</br>
+                            wf:set_filter("func");</br>
+                            wf:set_maxtime(2);</br>
+                            wf:wait()</br>
+                        </div>
+                    </div>
+                    <p><code>wf = wait_filter.new("eth0")</code></br>
+                    Create a new waitfilter objetct that monitors interface eth0</p>
+                    <p><code>wf:dev_promisc(1)</code></br>
+                    Sets promisc mode on the monitored interface</p>
+                    <p><code>wf:set_file("waitfilter_func.lua")</code></br>
+                    Sets the file where are the functions which will be called by the waitfilter</p>
+                    <p><code>wf:set_filter("func")</code></br>
+                    Sets the filter function, this funtion return a boolean value, while it is not true, the flow is blocked</p>
+                    <p><code>wf:set_maxtime(2)</code></br>
+                    Sets the maximum wait time, if this time is reached, the flow is unblocked</p>
+                    <p><code>wf:wait()</code></br>
+                    Runs the filter and block the execution flow</p>
+                    <p>The functions called by waitfilter needs to bee in other file, as monitor object, so we need two file, one to create the objects and other to create the functions. </p>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">waitfilter_func.lua</h3>
+                        </div>
+                        <div class="panel-body">
+                            wf_count = 0;</br>
+                            function func(packet, len)</br>
+                            &nbsp;&nbsp;  wf_count = wf_count + 1;</br>
+                            &nbsp;&nbsp;  if wf_count > 100 then</br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;    return true;</br>
+                            &nbsp;&nbsp; else</br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;    print(wf_count);</br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;    print(packet);</br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;    return false;</br>
+                            &nbsp;&nbsp;  end</br>
+                            end
+                        </div>
+                    </div>
+                    <p>This is the function called by waitfilter object, in this example, the function declares a counter, and blocks the  flow execution
+                         until receives 100 packets, below is showed how the function must be declared, the others lines is only Lua code, and to use Naphex you must know at least a little of Lua</br>
+                    <p><code>function func(packet, len)</code></br>
+                    Creates the function to process the packets, all filter function in the waitfilter object should have this format, two parameters, </br>
+                    <strong>packet:</strong> gets a string buffer containing the network packet received.</br>
+                    <strong>len:</strong> gets the lenght of the network packet received..</br></p></p>
+                    <p><h2>Methods of Wait Filters</h2></p>
+                    <p><code>wait_filter.new(iface)</code>: Creates a new waitfilter object.</br>
+                            iface is a string that indicates the system interface that will be monitored</p>
+                    <p><code>wait_filter:set_filter(func)</code>: Sets the filter function of the waitfilter.</br>
+                            func is a string that sets the filter function, the filter function is executed for every packet received</p>
+                    <p><code>wait_filter:set_action(func)</code>: Sets the action function of the waitfilter.</br>
+                            func is a string that sets the action function, the action function is executed after filter function returns true</p>
+                    <p><code>wait_filter:set_file(file)</code>: Sets the file where are the functions called by the waitfilter, if no file is set, waitfilter calls the file passed on the command line. </br>
+                        file is a string with the name path and name of the file</p>
+                    <p><code>wait_filter:set_maxtime(sec)</code>: Sets the maximum wait time</br>
+                        <strong>sec</strong> is a integer that indicates the time in seconds</p>
+                    <code>wait_filter:dev_promisc(p)</code>: Sets the interface of waitfilter to promiscuous mode.</br>
+                        <strong>p</strong> is a integer, where if equals 1, the monitor interface is set to promiscuous mode, if 0 is set to no promiscue mode, the default value is 1.</p>
+                    <p><code>wait_filter:dev_rfmonitor(r)</code>: Sets the interface of waitfilter to rf-monitor mode.</br>
+                        <strong>r</strong> is a integer, where if equals 1, the monitor interface is set to rf-monitor mode, if 0 is set to no rf-monitor mode, the default value is 0.</p>
+                    <p><code>wait_filter:dev_direction(d)</code>: Sets the direction of waitfilter interface , it means, if the monitor catches only input packets, output or the both.</br>
+                        <strong>d</strong> is a integer, where if d equals 0, set the direction to IN OUT, if d equals 1 set the direction to OUT, and if d equals 2 set the direction to IN, the default value is 0.</p>
+                    <p><code>wait_filter:dev_timeout(t)</code>: Sets the read timeout that will be used on a capture handle when the handle is activated to to_ms, which is in units of milliseconds.</br>
+                        <strong>t</strong> is a integer that sets the time in milliseconds, the default value is 500.</p>
+                    <p><code>wait_filter:wait()</code>: Blocks the execution flow until filter function returns true</p>
+                    </br>
+                    <p><h2>Threads</h2></p>
+                    <p>The thread object creates a thread in a program.</p>
+                    <p>Below is showed a example using thread</p>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">thread.lua</h3>
+                        </div>
+                        <div class="panel-body">
+                            pid = thread.new();</br>
+                            pid:set_function("func");</br>
+                            pid:set_file("thread_func.lua");</br>
+                            pid:run();</br>
+                            os.execute("sleep 2");</br>
+                            pid:detach();</br>
+                        </div>
+                    </div>
+                    <p><code>pid = thread.new()</code></br>
+                    Create a new thread</p>
+                    <p><code>pid:set_function("func")</code></br>
+                    Sets the thread function</p>
+                    <code>pid:set_file("thread_func.lua")</code></br>
+                    Sets the lua file where are the thread function defined</p>
+                    <p><code>pid:run()</code></br>
+                        Runs the thread</p>
+                    <p><code>os.execute("sleep 2")</code></br>
+                        Stops the execution 2 seconds</p>
+                    <p><code>pid:detach()</code></br>
+                        Detach the thread</p>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">thread_func.lua</h3>
+                        </div>
+                        <div class="panel-body">
+                            function func()</br>
+                             &nbsp;&nbsp;   print("Thread 1 executed from LUA");</br>
+                             &nbsp;&nbsp;   os.execute("sleep 5");</br>
+                             &nbsp;&nbsp;   print("Thread 1 finished from LUA");</br>
+                            end</br>
+                        </div>
+                    </div>
+                    <p>The thread funcion has not parameters</p>
+                    <p><h2>Methods of Threads</h2></p>
+                    <p><code>thread.new()</code>: Creates a new thread objetct</p>
+                    <p><code>thread:set_function(func)</code>: Set the function of thread</br>
+                        <strong>func</strong> is a string with the function name</p>
+                    <p><code>thread:set_function(func)</code>: Set the function of thread</br>
+                        <strong>func</strong> is a string with the function name</p>
                 </div>
                 <div class="col-xs-1">
                 </div>
