@@ -210,12 +210,12 @@ bool llib_load(list<string> & libs, lua_State *L, const string &path) {
   }
 
 //   for (list<string>::iterator it = libs.begin(); it != libs.end(); it++) {
-// 
+//
 //     lua_pushcfunction(L, fnc_call);
 //     lua_setfield(L, -2, it->c_str());
 //   }
 
-  lua_pop(L, 1); 
+  lua_pop(L, 1);
 
   return true;
 }

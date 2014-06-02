@@ -39,7 +39,7 @@ namespace naph {
 
 /**
  * \class on_device
- * 
+ *
  * The clss on_device is derivate of abstract class device
  * and define the virtuals functions of device class.
  * on_device is used to online network device interface,
@@ -50,7 +50,7 @@ class on_device : public device {
  public:
   /**
    * Constructor
-   * 
+   *
    * @param device	Specifies the network device name
    */
   explicit on_device(string device);
