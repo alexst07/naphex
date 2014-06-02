@@ -35,7 +35,7 @@ static ETHER_FRAME *check_ether(lua_State *L, int index) {
   luaL_checktype(L, index, LUA_TUSERDATA);
   ether = (ETHER_FRAME *)luaL_checkudata(L, index, ETHERNAME);
 
-  if (ether == NULL) 
+  if (ether == NULL)
     luaL_error(L, "Argument error in ethernet");
 
   return ether;
@@ -49,10 +49,9 @@ static ETHER_FRAME *push_ether(lua_State *L) {
 }
 
 static int ether_new(lua_State *L) {
-  printf ("Teste ether");
   int argc = lua_gettop(L);
   size_t len;
-  
+
   ETHER_FRAME *ether = push_ether(L);
   assert(ether != NULL);
 
@@ -77,7 +76,7 @@ static int ether_new(lua_State *L) {
     luaL_error(L, "Argument number error in ethernet");
   }
 
-  return 1; 
+  return 1;
 }
 
 static int ether_set_shost(lua_State *L) {
@@ -105,11 +104,11 @@ static int ether_set_shost(lua_State *L) {
 static int ether_set_dhost(lua_State *L) {
   ETHER_FRAME *ether = check_ether(L, 1);
   const char *mac = luaL_checkstring(L, 2);
-  
+
   const char* tok = ":";
   char * pch;
   pch = strtok ((char *) mac, tok);
-  
+
   int i;
   for (i = 0; pch != NULL; i++) {
     u_char hex = (char)strtol(pch, NULL, 16);
@@ -120,7 +119,7 @@ static int ether_set_dhost(lua_State *L) {
 
     pch = strtok (NULL, tok);
   }
-  
+
   return 0;
 }
 
@@ -181,7 +180,7 @@ static int ether_get_shost(lua_State *L) {
 static int ether_get_dhost(lua_State *L) {
   ETHER_FRAME *ether = check_ether(L, 1);
   int op = luaL_checkinteger(L, 2);
-  
+
   char mac[30];
 
   if (op == 1) {
@@ -204,7 +203,7 @@ static int ether_get_dhost(lua_State *L) {
       ether->frame[5]
     );
   }
-  
+
   lua_pushstring(L, mac);
   return 1;
 }

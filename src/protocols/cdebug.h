@@ -57,7 +57,7 @@ to pmesg away */
   va_end(args);
 
 #endif /* NDEBUG */
-#endif /* NDEBUG && __GNUC__ */
-}
 
+}
+#endif /* NDEBUG && __GNUC__ */
 #endif  // INCLUDE_NPH_DEBUG_H_

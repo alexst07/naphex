@@ -1,17 +1,17 @@
-# 
+#
 #  This file is part of the Naphex project
 #  Copyright (C) 2014  Alex Silva Torres <alexst07@gmail.com>
-# 
+#
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
-# 
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-# 
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -38,7 +38,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set (NAPHEX_VERSION_MAJOR 0)
 set (NAPHEX_VERSION_MINOR 0)
 set (NAPHEX_VERSION_RELEASE 1)
-set (NAPHEX_VERSION 
+set (NAPHEX_VERSION
     "${NAPHEX_VERSION_MAJOR}.${NAPHEX_VERSION_MINOR}.${NAPHEX_VERSION_RELEASE}")
 
 ##
@@ -59,14 +59,14 @@ set (NAPHEX_INSTALL_CONF_PATH etc/naphex)
 ##
 ## Set debug mode if is running as debug mode
 ##
-if( CMAKE_BUILD_TYPE STREQUAL "Release") 
+if( CMAKE_BUILD_TYPE STREQUAL "Release")
   set (NAPHEX_DEBUG "#define NAPHEX_NDEBUG")
 endif ()
 
 ##
 ## Set configuration file path
 ##
-set (NAPHEX_CONFIG_FILE 
+set (NAPHEX_CONFIG_FILE
     "${CMAKE_INSTALL_PREFIX}/${NAPHEX_INSTALL_CONF_PATH}/naphex.conf")
 
 ##
@@ -99,7 +99,7 @@ include_directories ("${PROJECT_BINARY_DIR}/include")
 ##
 ## Add the source files
 ##
-add_executable(naphex 
+add_executable(naphex
               ${CMAKE_CURRENT_SOURCE_DIR}/src/lua_channel.cpp
               ${CMAKE_CURRENT_SOURCE_DIR}/src/channel.cpp
               ${CMAKE_CURRENT_SOURCE_DIR}/src/args.cpp
