@@ -49,9 +49,6 @@ wait_filter::wait_filter(string interface) {
 wait_filter::~wait_filter() {
   lua_close(this->L);
 
-  if (is_run)
-    thread.detach();
-
   delete this->dev;
 }
 

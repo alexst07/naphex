@@ -52,9 +52,6 @@ monitor::~monitor() {
   lua_close(this->L);
   delete this->dev;
 
-  if (ran)
-    thread.detach();
-
   Debug(5) << "delete monitor";
 }
 
@@ -82,6 +79,7 @@ monitor::monitor(const monitor& mon) {
 
 void monitor::exec() {
   this->thread = std::thread(monitor::thread_func, this);
+  this->thread.detach();
   this->ran = true;
 }
 
