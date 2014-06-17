@@ -41,6 +41,13 @@
             .affix,.affix-top {
                 position:static;
             }
+            
+            .anchor {
+                display:block;
+                height:60px; /* this is the height of your header */
+                margin-top:-60px; /* this is again negative value of the height of your header */
+                visibility:hidden;
+             }
 
         </style>
     </head>
@@ -62,34 +69,32 @@
                     <div class="list-group" id="sidebar">
                         <ul class="list-group">
                             <li class="list-group-item">
-                                <a href="#">Overview</a>
+                                <a href="#overview">Overview</a><br/>
+                                <a href="#executing">Executing Naphex</a>
                             </li>
                             <li class="list-group-item">
-                                <a href="#">Monitors</a><br/>
-                                <a href="#">Configuring a device in monitor</a>
+                                <a href="#monitor">Monitors</a><br/>
+                                <a href="#monitor_methods">Methods of monitor</a>
                             </li>
                             <li class="list-group-item">
-                                <a href="#">Devices</a><br/>
-                                <a href="#">Configuring a device</a>
+                                <a href="#devices">Devices</a><br/>
+                                <a href="#ondevice_methods">Methods of online device</a><br/>
+                                <a href="#offdevice_methods">Methods of offline device</a>
                             </li>
                             <li class="list-group-item">
-                                <a href="#">Packets</a><br/>
-                                <a href="#">Choosing the Device</a><br/>
-                                <a href="#">Seding a packet</a>
+                                <a href="#wait_filters">Wait Filters</a><br/>
+                                <a href="#wait_filters_methods">Methods of Wait Filters</a><br/>
                             </li>
                             <li class="list-group-item">
-                                <a href="#">Wait filters</a><br/>
-                                <a href="#">Configuring a device in wait filters</a>
+                                <a href="#threads">Threads</a><br/>
+                                <a href="#threads_methods">Methods of Threads</a>
                             </li>
                             <li class="list-group-item">
-                                <a href="#">Threads</a>
+                                <a href="#channels">Channels</a>
                             </li>
                             <li class="list-group-item">
-                                <a href="#">Channels</a>
-                            </li>
-                            <li class="list-group-item">
-                                <a href="#">Protocols</a><br/>
-                                <a href="#">Creating a protocol</a>
+                                <a href="#protocols">Protocols</a><br/>
+                                <a href="#ethernet">Ethernet</a>
                             </li>
                         </ul>
                     </div>
@@ -97,9 +102,25 @@
 
 
                 <div class="col-xs-7" id="page-body">
-                    <p><h2>Overview</h2></p>
+                    <p><span class="anchor" id="overview"><h2>Overview</h2></span></p>
                     <p>Naphex is a software to monintor and inject packets in the network, it uses Lua language.</p>
-                    <p><h2>Monitor</h2></p>
+                    <p><span class="anchor" id="executing"><h2>Executing Naphex</h2></span></p>
+                <p>To execute the Naphex first we need install the Naphex, so we can call Naphex thus</br>
+                    &nbsp;&nbsp;<code>naphex [--version] [--file=&lt;path&gt;] [--lfile=&lt;path&gt;] [args]</code></br>
+                    Options for naphex:</br>
+                    
+                    <code>&nbsp;&nbsp;-v,&nbsp;&nbsp;  --version &nbsp;&nbsp; output version information and exit</code></br>
+                    <code>&nbsp;&nbsp;-f,&nbsp;&nbsp;  --file &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; specify the main lua file</code></br>
+                    <code>&nbsp;&nbsp;-l,&nbsp;&nbsp;  --lfile &nbsp;&nbsp;&nbsp;&nbsp; specify the function lua file</code></br>
+                    <code>&nbsp;&nbsp;-h,&nbsp;&nbsp;  --help &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; display this help and exit</code>
+                    </br></br>
+                    For example, to exectue a file with naphex:</br>
+                    <code>naphex -f file.lua</code></br></br>
+                    To execute a file and call the function source file:</br>
+                    <code>naphex -f file.lua -l func.lua</code></br></br>
+
+                </p>
+                <p><span class="anchor" id="monitor"><h2>Monitor</h2></span></p>
                     <p>Monitors is a object built to help to catch network packets, when called, the monitor create a thread that call the main function for every received packet.</p>
                     <p>Consider the follow example:</p>
                     <div class="panel panel-default">
@@ -157,7 +178,7 @@
                     Print the destination ethernet host, the 1 means mac format as xx:xx:xx:xx:xx:xx</p>
                     <p><code>print()</code></br>
                     Print a new line</p>
-                    <p><h2>Methods of monitor</h2></p>
+                    <p><span class="anchor" id="monitor_methods"><h2>Methods of monitor</h2></span></p>
                     <p><code>monitor.new(iface)</code>: Creates a new monitor object.</br>
                         iface is a string that indicates the system interface that will be monitored</p>
                     <p><code>monitor:set_fmain(func)</code>: Sets the main function of the monitor.</br>
@@ -183,7 +204,7 @@
                     <p><code>monitor:run()</code>: This function creates a thread and starts the monitor, you need call this function to run the monitor.</p>
                     <p><code>monitor:exit()</code>: Finishes the monitor, this function destroys the thread and call the function end().</p>
                     </br>
-                    <p><h2>Devices</h2></p>
+                    <p><span class="anchor" id="devices"><h2>Devices</h2></span></p>
                 <p>Devices are objects that represents the interface, it means you can create a device object to represents the interface eth0, the main uses of device ojbects on Naphex is to inject packets in the network.</br>
                     The devices objects can be accessed globally, it will be shown at the packet section.
                 </p>
@@ -205,18 +226,18 @@
                         Creates a new device object, the name <code>eth0_con</code> can be accessed globally</p>
                     <p><code>dev:open("eth0")</code></br>
                         Opens the interface to do operations as send a packet</p>
-                    <p><h2>Methods of online device</h2></p>
+                    <p><span class="anchor" id="ondevice_methods"><h2>Methods of online device</h2></span></p>
                     <p><code>object = ondevice.new(name)</code>: Creates a new online device object.</br>
                         name is a string that represent the name of the device object, this name can be accessed globally. </p>
                     <p><code>object = ondevice.open(device)</code>: open a device for capturing and sending of packets.</br>
                         device is a string that specifies the network device to open. </p>
-                    <p><h2>Methods of offline device</h2></p>
+                    <p><span class="anchor" id="offdevice_methods"><h2>Methods of offline device</h2></span></p>
                     <p><code>object = ondevice.new(name)</code>: Creates a new offline device object.</br>
                         name is a string that represent the name of the device object, this name can be accessed globally. </p>
                     <p><code>object = ondevice.open(name)</code>: Open a saved capture file for reading.</br>
                         name is a string that specifies the name of the file to open. </p>
                     </br>
-                    <p><h2>Wait Filters</h2></p>
+                    <p><span class="anchor" id="wait_filters"><h2>Wait Filters</h2></span></p>
                     <p>Wait Filters are objects that block the flow of execution until a condition is met.</p>
                     <p>The following example shows the operation of the wait filters./</p>
                     <div class="panel panel-default">
@@ -269,7 +290,7 @@
                     Creates the function to process the packets, all filter function in the waitfilter object should have this format, two parameters, </br>
                     <strong>packet:</strong> gets a string buffer containing the network packet received.</br>
                     <strong>len:</strong> gets the lenght of the network packet received..</br></p></p>
-                    <p><h2>Methods of Wait Filters</h2></p>
+                    <p><span class="anchor" id="wait_filters_methods"><h2>Methods of Wait Filters</h2></span></p>
                     <p><code>wait_filter.new(iface)</code>: Creates a new waitfilter object.</br>
                             iface is a string that indicates the system interface that will be monitored</p>
                     <p><code>wait_filter:set_filter(func)</code>: Sets the filter function of the waitfilter.</br>
@@ -290,7 +311,7 @@
                         <strong>t</strong> is a integer that sets the time in milliseconds, the default value is 500.</p>
                     <p><code>wait_filter:wait()</code>: Blocks the execution flow until filter function returns true</p>
                     </br>
-                    <p><h2>Threads</h2></p>
+                    <p><span class="anchor" id="threads"> <h2>Threads</h2></span></p>
                     <p>The thread object creates a thread in a program.</p>
                     <p>Below is showed a example using thread</p>
                     <div class="panel panel-default">
@@ -303,7 +324,7 @@
                             pid:set_file("thread_func.lua");</br>
                             pid:run();</br>
                             os.execute("sleep 2");</br>
-                            pid:detach();</br>
+                            pid:join();</br>
                         </div>
                     </div>
                     <p><code>pid = thread.new()</code></br>
@@ -316,8 +337,8 @@
                         Runs the thread</p>
                     <p><code>os.execute("sleep 2")</code></br>
                         Stops the execution 2 seconds</p>
-                    <p><code>pid:detach()</code></br>
-                        Detach the thread</p>
+                    <p><code>pid:join()</code></br>
+                        Wait the thread finishes to continue</p>
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">thread_func.lua</h3>
@@ -331,12 +352,78 @@
                         </div>
                     </div>
                     <p>The thread funcion has not parameters</p>
-                    <p><h2>Methods of Threads</h2></p>
+                    <p><span class="anchor" id="threads_methods"><h2>Methods of Threads</h2></span></p>
                     <p><code>thread.new()</code>: Creates a new thread objetct</p>
                     <p><code>thread:set_function(func)</code>: Set the function of thread</br>
                         <strong>func</strong> is a string with the function name</p>
-                    <p><code>thread:set_function(func)</code>: Set the function of thread</br>
-                        <strong>func</strong> is a string with the function name</p>
+                    <p><code>thread:set_file(file)</code>: Set the function source file</br>
+                        <strong>file</strong> is a string with the file path</p>
+                    <p><code>thread:detach()</code>: Detaches the thread</p>
+                    <p><code>thread:join()</code>: Blocks the flow until the thread finishes</p>
+                    </br>
+                    <p><span class="anchor" id="channels"><h2>Channels</h2></span></p>
+                    <p>How was seen, the threads, monitors and waitfilters function is located in other file,
+                    &nbsp; so we need some secure way to comunicate between these functions, all these functions is
+                    executed as separate thread, so we have to use something to avoid data race, and channels is the object
+                    to solve that.</p>
+                    <p>Below is showed a example using channels</p>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">channel.lua</h3>
+                        </div>
+                        <div class="panel-body">
+                            pid = thread.new();</br>
+                            pid:set_function("thread1");</br>
+                            pid:set_file("channel_f.lua");</br>
+                            pid:set_file("hannel_f.lua");</br>
+                            pid:run();</br>
+                            os.execute("sleep 2");</br>
+                            pid:join();</br>
+                            ch1 = channel.get("channel1");</br>
+                            print("Channel1: " .. ch1);</br>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">channel.lua</h3>
+                        </div>
+                        <div class="panel-body">
+                          function thread1()
+                            &nbsp;&nbsp;print("Thread 1 executed from LUA");
+                            &nbsp;&nbsp;ch1 = channel.get("channel1");
+                            &nbsp;&nbsp;print("Channel1: " .. ch1);
+                            &nbsp;&nbsp;os.execute("sleep 5");
+                            &nbsp;&nbsp;channel.set("channel1", "changed");
+                            &nbsp;&nbsp;print("Thread 1 finished from LUA");
+                          end
+
+                        </div>
+                    </div>
+                    <p>Only two functions are unknown here.</p>
+                    <p><code>channel.set(name, value)</code>: Creates a new channel if a channel with same name doesn't exist, 
+                        changes the value if exists a channel with the same name.</br>
+                        <strong>name:</strong> is a string for the name of channel.</br>
+                        <strong>value:</strong> is a string that sets the value of channel.
+                    </p>
+                    <p><code>channel.get(name)</code>: Gets a channel's value.</br>
+                        <strong>name:</strong> is a string for the name of channel.</br>
+                    </p></br>
+                    <p><span class="anchor" id="protocols"><h2>Protocols</h2></span></p>
+                    <p>Protocols on naphex are plugins that extends the functions to underestand protocols, natively, 
+                    naphex only receive packets, you can interpret them as bits, but naphex doesn't understand any kind of protocols as
+                    ethernet, ip, tcp or any other, so we can write plugins to add this functionality on naphex.</p>
+                    <p><span class="anchor" id="ethernet"><h3>Ethernet</h3></span></p>
+                    <p><code>ether.new(packet)</code></p>
+                    <p><code>ether.set_shost(mac)</code>: mac is a string like "xx:xx:xx:xx:xx:xx"</p>
+                    <p><code>ether.set_dhost(mac)</code>: mac is a string like "xx:xx:xx:xx:xx:xx"</p>
+                    <p><code>ether.set_type(type)</code>: type is a string for type of ethernet packet</p>
+                    <p><code>ether.set_payload(payload)</code>: payload is a byte string for the payload</p>
+                    <p><code>ether.get_shost()</code></p>
+                    <p><code>ether.get_dhost()</code></p>
+                    <p><code>ether.get_type()</code></p>
+                    <p><code>ether.get_payload()</code></p>
+                    <p><code>ether.payload_size()</code></p>
+                    <p><code>ether.__tostring()</code></p>
                 </div>
                 <div class="col-xs-1">
                 </div>
