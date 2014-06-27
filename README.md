@@ -1,6 +1,6 @@
 # Naphex
 
-Naphex is a software for monitoring network packets, with Naphex is possible monitor the packets and create rules to handle with these packets, for example, it is possible is possible send determined kind of packet, depending of the received packet.
+Naphex is a software for monitoring network packets, with Naphex is possible monitor the packets and create rules to handle with these packets, for example, it is possible send determined kind of packet, depending of the received packet.
 
 The Naphex works with Lua language, so the rules are created using Lua, it is easy add new protocols on Naphex, because all protocols works like plugins, it means, a dynamic library, so you can create a new protocol to Naphex easily.
 
