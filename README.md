@@ -42,7 +42,7 @@ Example:
 
 The default install prefix is /usr/local, if you don't intend to change it, just run, after build:
 
-    $ cmke -DCMAKE_BUILD_TYPE=Debug ..
+    $ cmke -DCMAKE_BUILD_TYPE=Release ..
     $ make install
 
 ## CONTRIBUTING
